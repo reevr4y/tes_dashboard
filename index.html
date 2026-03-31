@@ -1,0 +1,2249 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIMPADES — Desa Sambong</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    :root {
+      --green: #2d7a4f;
+      --green-light: #e8f5ee;
+      --green-mid: #5aad7a;
+      --teal: #1a6b6b;
+      --teal-light: #e0f2f2;
+      --amber: #b86a00;
+      --amber-light: #fff3e0;
+      --red: #c0392b;
+      --red-light: #fdecea;
+      --blue: #1565c0;
+      --blue-light: #e3f0fd;
+      --purple: #6a1b9a;
+      --purple-light: #f3e5f5;
+      --pink: #ad1457;
+      --pink-light: #fce4ec;
+      --orange: #e65100;
+      --orange-light: #fff3e0;
+      --bg: #f5f7f5;
+      --card: #ffffff;
+      --text: #1a2e1a;
+      --text2: #4a6050;
+      --text3: #7a9080;
+      --border: #dde8de;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #1a5c2e 0%, #2d7a4f 60%, #3a9660 100%);
+      color: white;
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 24px;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .header-title h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .header-title p {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 1px;
+    }
+
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .posyandu-selector {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer;
+    }
+
+    .posyandu-selector option {
+      color: var(--text);
+      background: white;
+    }
+
+    /* SIDEBAR + LAYOUT */
+    .layout {
+      display: flex;
+      min-height: calc(100vh - 72px);
+    }
+
+    .sidebar {
+      width: 220px;
+      background: white;
+      border-right: 1px solid var(--border);
+      padding: 16px 12px;
+      flex-shrink: 0;
+    }
+
+    .main {
+      flex: 1;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+
+    .nav-group {
+      margin-bottom: 20px;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 8px;
+      margin-bottom: 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      transition: all 0.15s;
+      margin-bottom: 2px;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-item:hover {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .nav-item.active {
+      background: var(--green-light);
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .nav-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    /* PAGES */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .page-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .page-sub {
+      color: var(--text2);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .grid4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    @media(max-width: 900px) {
+      .grid4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .grid3 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media(max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        display: none;
+        padding: 16px;
+      }
+
+      .sidebar.open {
+        display: block;
+      }
+
+      .main {
+        padding: 16px;
+      }
+
+      .grid4,
+      .grid3,
+      .grid2 {
+        grid-template-columns: 1fr;
+      }
+
+      .menu-toggle {
+        display: block !important;
+      }
+
+      .hide-mobile {
+        display: none !important;
+      }
+
+      .stat-num {
+        font-size: 24px;
+      }
+
+      .page-title {
+        font-size: 18px;
+      }
+
+      .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* STAT CARDS */
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text3);
+      font-weight: 500;
+    }
+
+    .stat-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      color: var(--text2);
+    }
+
+    .stat-icon {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-green {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .badge-red {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    .badge-amber {
+      background: var(--amber-light);
+      color: var(--amber);
+    }
+
+    .badge-blue {
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .badge-purple {
+      background: var(--purple-light);
+      color: var(--purple);
+    }
+
+    /* TABLES */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text2);
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--border);
+      background: #fafcfa;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: var(--bg);
+    }
+
+    /* FORMS */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group.full {
+      grid-column: 1/-1;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text);
+      background: white;
+      outline: none;
+      transition: border 0.15s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(45, 122, 79, 0.12);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #246040;
+    }
+
+    .btn-secondary {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1px solid #b8d9c5;
+    }
+
+    .btn-danger {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    .btn-sm {
+      padding: 5px 12px;
+      font-size: 12px;
+    }
+
+    /* SECTION HEADERS */
+    .section-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* POSYANDU TABS */
+    .pos-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .pos-tab {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: white;
+      color: var(--text2);
+      transition: all 0.15s;
+    }
+
+    .pos-tab.active {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+
+    .pos-tab:hover:not(.active) {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    /* PHOTO UPLOAD */
+    .photo-upload {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .photo-upload:hover {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+
+    .photo-upload input {
+      display: none;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .photo-thumb {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .photo-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-thumb .del-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* MAP */
+    #psn-map,
+    #map-view {
+      height: 350px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    /* CHART CONTAINERS */
+    .chart-box {
+      position: relative;
+      height: 220px;
+    }
+
+    /* STUNTING INDICATOR */
+    .stunt-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 80px;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stunt-bar-wrap {
+      background: #eee;
+      border-radius: 4px;
+      height: 8px;
+    }
+
+    .stunt-bar {
+      height: 8px;
+      border-radius: 4px;
+    }
+
+    /* NOTIFICATION */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 9px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .alert-success {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1px solid #b8d9c5;
+    }
+
+    .alert-warning {
+      background: var(--amber-light);
+      color: var(--amber);
+      border: 1px solid #f7cc8a;
+    }
+
+    /* ODGJ color */
+    .odgj-card {
+      border-left: 4px solid var(--purple);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 16px;
+      max-width: 680px;
+      width: 95%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-hd {
+      padding: 20px 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-hd h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      padding: 16px 24px 24px;
+    }
+
+    .close-btn {
+      background: var(--bg);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* IBU HAMIL STATUS */
+    .hamil-timeline {
+      display: flex;
+      gap: 0;
+      margin: 12px 0;
+    }
+
+    .hamil-month {
+      flex: 1;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      border-right: 1px solid white;
+    }
+
+    /* Print-friendly */
+    @media print {
+
+      .sidebar,
+      .header-right {
+        display: none;
+      }
+
+      .layout {
+        display: block;
+      }
+
+      .main {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="global-loader"
+    style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+    <div style="font-size:40px;margin-bottom:16px;animation:spin 1s linear infinite">⏳</div>
+    <div style="font-weight:600;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;">Memuat data dari
+      server...</div>
+    <style>
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </div>
+
+  <div class="header">
+    <div class="header-inner">
+      <div class="logo-icon">🌿</div>
+      <div class="header-title">
+        <h1>SIMPADES Kader</h1>
+        <p>Sistem Informasi Posyandu & FKD</p>
+      </div>
+      <div class="header-right">
+        <span class="hide-mobile" style="color:rgba(255,255,255,0.7);font-size:13px;">Posyandu:</span>
+        <select class="posyandu-selector" id="globalPos" onchange="filterByPosyandu()">
+          <option value="semua">Semua Posyandu</option>
+          <option>Bougenville</option>
+          <option>Kantil</option>
+          <option>Teratai</option>
+          <option>Anggrek</option>
+          <option>Kenanga</option>
+          <option>Dahlia</option>
+          <option>Melati</option>
+          <option>Mawar</option>
+        </select>
+        <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')"
+          style="display:none; background:none; border:none; color:white; font-size:24px; cursor:pointer; margin-left:12px; padding:0; line-height:1;">☰</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="nav-group">
+        <div class="nav-label">Utama</div>
+        <button class="nav-item active" onclick="showPage('dashboard')">
+          <span class="nav-dot" style="background:#e8f5ee;">📊</span> Dashboard
+        </button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">Data Warga</div>
+        <button class="nav-item" onclick="showPage('balita')">
+          <span class="nav-dot" style="background:#fce4ec;">👶</span> Balita & Stunting
+        </button>
+        <button class="nav-item" onclick="showPage('ibu_hamil')">
+          <span class="nav-dot" style="background:#e3f0fd;">🤱</span> Ibu Hamil
+        </button>
+        <button class="nav-item" onclick="showPage('lansia')">
+          <span class="nav-dot" style="background:#f3e5f5;">👴</span> Lansia
+        </button>
+        <button class="nav-item" onclick="showPage('odgj')">
+          <span class="nav-dot" style="background:#ede7f6;">🧠</span> ODGJ
+        </button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">Kegiatan</div>
+        <button class="nav-item" onclick="showPage('imunisasi')">
+          <span class="nav-dot" style="background:#e0f2f2;">💉</span> Imunisasi
+        </button>
+        <button class="nav-item" onclick="showPage('psn')">
+          <span class="nav-dot" style="background:#fff3e0;">🦟</span> PSN (Nyamuk)
+        </button>
+        <button class="nav-item" onclick="showPage('jamban')">
+          <span class="nav-dot" style="background:#e8f5ee;">🚽</span> Jamban Sehat
+        </button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">Laporan</div>
+        <button class="nav-item" onclick="showPage('laporan')">
+          <span class="nav-dot" style="background:#fff8e1;">📋</span> Rekap Laporan
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- ==================== DASHBOARD ==================== -->
+      <div id="page-dashboard" class="page active">
+        <div class="page-title">Dashboard Kesehatan</div>
+        <p class="page-sub">Rekapitulasi seluruh kegiatan FKD & Posyandu Desa Sambong</p>
+
+        <div class="grid4" style="margin-bottom:20px;">
+          <div class="stat-card">
+            <div class="stat-icon">👶</div>
+            <div class="stat-label">Total Balita</div>
+            <div class="stat-num" id="dash-balita">128</div>
+            <div class="stat-sub"><span class="badge badge-red">24 stunting</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🤱</div>
+            <div class="stat-label">Ibu Hamil</div>
+            <div class="stat-num" id="dash-hamil">17</div>
+            <div class="stat-sub">Aktif terdaftar</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👴</div>
+            <div class="stat-label">Lansia</div>
+            <div class="stat-num" id="dash-lansia">89</div>
+            <div class="stat-sub">≥ 60 tahun</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🧠</div>
+            <div class="stat-label">ODGJ</div>
+            <div class="stat-num" id="dash-odgj">6</div>
+            <div class="stat-sub">Terpantau</div>
+          </div>
+        </div>
+
+        <div class="grid3" style="margin-bottom:20px;">
+          <div class="stat-card">
+            <div class="stat-icon">💉</div>
+            <div class="stat-label">Imunisasi Bulan Ini</div>
+            <div class="stat-num">43</div>
+            <div class="stat-sub">Dari 50 sasaran</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🦟</div>
+            <div class="stat-label">Lokasi PSN Dicek</div>
+            <div class="stat-num">12</div>
+            <div class="stat-sub">Bulan ini</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🚽</div>
+            <div class="stat-label">Jamban Sehat</div>
+            <div class="stat-num">78<small style="font-size:14px">%</small></div>
+            <div class="stat-sub">312 dari 400 KK</div>
+          </div>
+        </div>
+
+        <!-- CHARTS ROW -->
+        <div class="grid2" style="margin-bottom:20px;">
+          <div class="card">
+            <div class="card-body">
+              <div class="section-hd"><span class="section-title">Stunting per Posyandu</span></div>
+              <div class="chart-box"><canvas id="chartStunting"></canvas></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="section-hd"><span class="section-title">Cakupan Imunisasi (%)</span></div>
+              <div class="chart-box"><canvas id="chartImun"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Per Posyandu Summary -->
+        <div class="card">
+          <div class="card-body">
+            <div class="section-hd">
+              <span class="section-title">Ringkasan Per Posyandu</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Posyandu</th>
+                    <th>Balita</th>
+                    <th>Stunting</th>
+                    <th>Ibu Hamil</th>
+                    <th>Lansia</th>
+                    <th>ODGJ</th>
+                    <th>Imunisasi</th>
+                    <th>Jamban (%)</th>
+                  </tr>
+                </thead>
+                <tbody id="pos-summary-tbody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== BALITA / STUNTING ==================== -->
+      <div id="page-balita" class="page">
+        <div class="page-title">Data Balita & Stunting</div>
+        <p class="page-sub">Pemantauan berat badan, tinggi, dan status gizi balita</p>
+
+        <div class="pos-tabs" id="balita-tabs"></div>
+
+        <div class="grid3" style="margin-bottom:20px;">
+          <div class="stat-card">
+            <div class="stat-label">Total Balita</div>
+            <div class="stat-num">128</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Stunting</div>
+            <div class="stat-num" style="color:var(--red);">24</div>
+            <div class="stat-sub">18.75% dari total</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Gizi Buruk</div>
+            <div class="stat-num" style="color:var(--amber);">5</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-body">
+            <div class="section-hd">
+              <span class="section-title">Tambah Data Balita</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-balita')">+ Tambah</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Usia</th>
+                    <th>Alamat</th>
+                    <th>Posyandu</th>
+                    <th>BB (kg)</th>
+                    <th>TB (cm)</th>
+                    <th>LK (cm)</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="balita-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="section-hd"><span class="section-title">Grafik Stunting per Posyandu</span></div>
+            <div class="chart-box"><canvas id="chartStunting2"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== IBU HAMIL ==================== -->
+      <div id="page-ibu_hamil" class="page">
+        <div class="page-title">Data Ibu Hamil</div>
+        <p class="page-sub">Pemantauan kehamilan dan kunjungan ANC</p>
+
+        <div class="pos-tabs" id="hamil-tabs"></div>
+
+        <div class="section-hd" style="margin-bottom:14px;">
+          <span></span>
+          <button class="btn btn-primary" onclick="openModal('modal-hamil')">+ Tambah Ibu Hamil</button>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Usia</th>
+                    <th>Alamat</th>
+                    <th>Posyandu</th>
+                    <th>Usia Kehamilan</th>
+                    <th>HPHT</th>
+                    <th>HPL</th>
+                    <th>ANC Ke-</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="hamil-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== LANSIA ==================== -->
+      <div id="page-lansia" class="page">
+        <div class="page-title">Data Lansia</div>
+        <p class="page-sub">Pemantauan kesehatan warga usia ≥ 60 tahun</p>
+
+        <div class="pos-tabs" id="lansia-tabs"></div>
+
+        <div class="section-hd" style="margin-bottom:14px;">
+          <span></span>
+          <button class="btn btn-primary" onclick="openModal('modal-lansia')">+ Tambah Lansia</button>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Usia</th>
+                    <th>Alamat</th>
+                    <th>Posyandu</th>
+                    <th>TD (mmHg)</th>
+                    <th>BB (kg)</th>
+                    <th>TB (cm)</th>
+                    <th>Riwayat Penyakit</th>
+                    <th>Kunjungan Terakhir</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="lansia-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== ODGJ ==================== -->
+      <div id="page-odgj" class="page">
+        <div class="page-title">Data ODGJ</div>
+        <p class="page-sub">Orang Dengan Gangguan Jiwa — Pemantauan & Pendampingan</p>
+
+        <div class="pos-tabs" id="odgj-tabs"></div>
+
+        <div class="alert alert-warning">
+          ⚠️ Data ODGJ bersifat rahasia. Akses hanya untuk petugas berwenang.
+        </div>
+
+        <div class="section-hd" style="margin-bottom:14px;">
+          <span></span>
+          <button class="btn btn-primary" onclick="openModal('modal-odgj')">+ Tambah Data ODGJ</button>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Usia</th>
+                    <th>Alamat</th>
+                    <th>Posyandu</th>
+                    <th>Diagnosa</th>
+                    <th>Status Obat</th>
+                    <th>Pendamping</th>
+                    <th>Pantau Terakhir</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="odgj-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== IMUNISASI ==================== -->
+      <div id="page-imunisasi" class="page">
+        <div class="page-title">Data Imunisasi</div>
+        <p class="page-sub">Cakupan imunisasi balita & ibu hamil per posyandu</p>
+
+        <div class="pos-tabs" id="imun-tabs"></div>
+
+        <div class="section-hd" style="margin-bottom:14px;">
+          <span></span>
+          <button class="btn btn-primary" onclick="openModal('modal-imun')">+ Catat Imunisasi</button>
+        </div>
+
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-body">
+            <div class="section-hd"><span class="section-title">Cakupan Imunisasi per Posyandu</span></div>
+            <div class="chart-box"><canvas id="chartImun2"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama Anak</th>
+                    <th>Usia</th>
+                    <th>Posyandu</th>
+                    <th>BCG</th>
+                    <th>DPT</th>
+                    <th>Polio</th>
+                    <th>Campak</th>
+                    <th>Hepatitis B</th>
+                    <th>Tanggal</th>
+                  </tr>
+                </thead>
+                <tbody id="imun-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PSN ==================== -->
+      <div id="page-psn" class="page">
+        <div class="page-title">PSN — Pemberantasan Sarang Nyamuk</div>
+        <p class="page-sub">Pencatatan lokasi, foto bukti, dan pemantauan di peta</p>
+
+        <div class="pos-tabs" id="psn-tabs"></div>
+
+        <div class="grid2" style="margin-bottom:20px;">
+          <div class="card">
+            <div class="card-body">
+              <div class="section-hd">
+                <span class="section-title">Input Kegiatan PSN</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div class="form-group">
+                  <label>Posyandu / Wilayah</label>
+                  <select id="psn-pos">
+                    <option>Bougenville</option>
+                    <option>Kantil</option>
+                    <option>Teratai</option>
+                    <option>Anggrek</option>
+                    <option>Kenanga</option>
+                    <option>Dahlia</option>
+                    <option>Melati</option>
+                    <option>Mawar</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Alamat / RT</label>
+                  <input type="text" id="psn-alamat" placeholder="Contoh: RT 02 / Dk. Sambong">
+                </div>
+                <div class="form-group">
+                  <label>Tanggal Kegiatan</label>
+                  <input type="date" id="psn-tgl">
+                </div>
+                <div class="form-group">
+                  <label>Petugas</label>
+                  <input type="text" id="psn-petugas" placeholder="Nama petugas PSN">
+                </div>
+                <div class="form-group">
+                  <label>Hasil Temuan</label>
+                  <select id="psn-temuan">
+                    <option>Tidak ada jentik</option>
+                    <option>Ditemukan jentik — sudah dibersihkan</option>
+                    <option>Genangan air ditemukan</option>
+                    <option>Wadah positif jentik</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Catatan</label>
+                  <textarea id="psn-catatan" placeholder="Tambahan informasi..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Foto Bukti Kegiatan</label>
+                  <div class="photo-upload" onclick="document.getElementById('psn-photo-input').click()">
+                    <input type="file" id="psn-photo-input" accept="image/*" multiple onchange="handlePhotos(this)">
+                    <div style="font-size:28px;margin-bottom:8px;">📷</div>
+                    <div style="font-size:13px;color:var(--text2);">Klik untuk upload foto</div>
+                    <div style="font-size:11px;color:var(--text3);">JPG, PNG — bisa lebih dari 1 foto</div>
+                  </div>
+                  <div class="photo-grid" id="photo-preview"></div>
+                </div>
+                <div class="form-group">
+                  <label>📍 Tandai Lokasi di Peta</label>
+                  <div id="psn-map"></div>
+                  <p id="psn-coords" style="font-size:12px;color:var(--text2);margin-top:6px;">Klik peta untuk menandai
+                    lokasi</p>
+                </div>
+                <button class="btn btn-primary" onclick="savePSN()">💾 Simpan Data PSN</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="section-hd">
+                <span class="section-title">Peta Sebaran PSN</span>
+                <span class="badge badge-green" id="psn-count-badge">0 titik</span>
+              </div>
+              <div id="map-view"></div>
+              <div style="margin-top:14px;">
+                <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Riwayat Kegiatan</div>
+                <div id="psn-list" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== JAMBAN ==================== -->
+      <div id="page-jamban" class="page">
+        <div class="page-title">Jamban Sehat</div>
+        <p class="page-sub">Pendataan kepemilikan dan kondisi jamban per keluarga</p>
+
+        <div class="pos-tabs" id="jamban-tabs"></div>
+
+        <div class="grid4" style="margin-bottom:20px;">
+          <div class="stat-card">
+            <div class="stat-label">Total KK Terdata</div>
+            <div class="stat-num">400</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Punya Jamban Sehat</div>
+            <div class="stat-num" style="color:var(--green);">312</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Belum Sehat</div>
+            <div class="stat-num" style="color:var(--amber);">68</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">ODF (Open Defecation Free)</div>
+            <div class="stat-num">5<small style="font-size:14px"> dusun</small></div>
+          </div>
+        </div>
+
+        <div class="section-hd" style="margin-bottom:14px;">
+          <span></span>
+          <button class="btn btn-primary" onclick="openModal('modal-jamban')">+ Tambah Data KK</button>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama KK</th>
+                    <th>Alamat / RT</th>
+                    <th>Posyandu</th>
+                    <th>Jenis Jamban</th>
+                    <th>Kondisi</th>
+                    <th>Air Bersih</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="jamban-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== LAPORAN ==================== -->
+      <div id="page-laporan" class="page">
+        <div class="page-title">Rekap Laporan Bulanan</div>
+        <p class="page-sub">Ringkasan kegiatan FKD & Posyandu untuk pelaporan ke Puskesmas</p>
+
+        <div class="grid2" style="margin-bottom:20px;">
+          <div class="form-group">
+            <label>Bulan</label>
+            <select id="lap-bulan">
+              <option>Januari</option>
+              <option>Februari</option>
+              <option>Maret</option>
+              <option>April</option>
+              <option>Mei</option>
+              <option>Juni</option>
+              <option>Juli</option>
+              <option>Agustus</option>
+              <option>September</option>
+              <option selected>Oktober</option>
+              <option>November</option>
+              <option>Desember</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tahun</label>
+            <select id="lap-tahun">
+              <option>2024</option>
+              <option selected>2025</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="alert alert-success">✅ Laporan Oktober 2025 siap diunduh</div>
+
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-body">
+            <div class="section-hd">
+              <span class="section-title">Rekapitulasi Kegiatan</span>
+              <button class="btn btn-secondary btn-sm"
+                onclick="alert('Fitur cetak/export PDF tersedia di versi lengkap')">🖨️ Cetak / Export</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Kegiatan</th>
+                    <th>Bougenville</th>
+                    <th>Kantil</th>
+                    <th>Teratai</th>
+                    <th>Anggrek</th>
+                    <th>Kenanga</th>
+                    <th>Dahlia</th>
+                    <th>Melati</th>
+                    <th>Mawar</th>
+                    <th>TOTAL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Balita ditimbang</td>
+                    <td>18</td>
+                    <td>15</td>
+                    <td>20</td>
+                    <td>12</td>
+                    <td>17</td>
+                    <td>14</td>
+                    <td>16</td>
+                    <td>16</td>
+                    <td><strong>128</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Stunting</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>5</td>
+                    <td>2</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td><strong>24</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Ibu hamil ANC</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td><strong>17</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Lansia hadir</td>
+                    <td>12</td>
+                    <td>10</td>
+                    <td>14</td>
+                    <td>8</td>
+                    <td>13</td>
+                    <td>11</td>
+                    <td>10</td>
+                    <td>11</td>
+                    <td><strong>89</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Imunisasi</td>
+                    <td>6</td>
+                    <td>5</td>
+                    <td>7</td>
+                    <td>4</td>
+                    <td>6</td>
+                    <td>5</td>
+                    <td>5</td>
+                    <td>5</td>
+                    <td><strong>43</strong></td>
+                  </tr>
+                  <tr>
+                    <td>PSN dikunjungi</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td><strong>12</strong></td>
+                  </tr>
+                  <tr>
+                    <td>KK jamban sehat</td>
+                    <td>42</td>
+                    <td>36</td>
+                    <td>48</td>
+                    <td>30</td>
+                    <td>42</td>
+                    <td>36</td>
+                    <td>40</td>
+                    <td>38</td>
+                    <td><strong>312</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="section-hd"><span class="section-title">Grafik Tren 6 Bulan</span></div>
+            <div class="chart-box" style="height:260px;"><canvas id="chartTren"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal Balita -->
+  <div class="modal-overlay" id="modal-balita">
+    <div class="modal">
+      <div class="modal-hd">
+        <h3>Tambah Data Balita</h3>
+        <button class="close-btn" onclick="closeModal('modal-balita')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group"><label>Nama Lengkap</label><input type="text" id="b-nama" placeholder="Nama balita">
+          </div>
+          <div class="form-group"><label>Usia (bulan)</label><input type="number" id="b-usia" placeholder="cth: 24">
+          </div>
+          <div class="form-group full"><label>Alamat / RT</label><input type="text" id="b-alamat"
+              placeholder="RT 01 Dusun Sambong"></div>
+          <div class="form-group"><label>Posyandu</label>
+            <select id="b-pos">
+              <option>Bougenville</option>
+              <option>Kantil</option>
+              <option>Teratai</option>
+              <option>Anggrek</option>
+              <option>Kenanga</option>
+              <option>Dahlia</option>
+              <option>Melati</option>
+              <option>Mawar</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Tanggal Timbang</label><input type="date" id="b-tgl"></div>
+          <div class="form-group"><label>Berat Badan (kg)</label><input type="number" step="0.1" id="b-bb"
+              placeholder="cth: 8.5"></div>
+          <div class="form-group"><label>Tinggi Badan (cm)</label><input type="number" step="0.1" id="b-tb"
+              placeholder="cth: 75"></div>
+          <div class="form-group"><label>Lingkar Kepala (cm)</label><input type="number" step="0.1" id="b-lk"
+              placeholder="cth: 45"></div>
+          <div class="form-group"><label>Lingkar Lengan (cm)</label><input type="number" step="0.1" id="b-ll"
+              placeholder="cth: 14"></div>
+          <div class="form-group"><label>Status Gizi</label>
+            <select id="b-status">
+              <option>Normal</option>
+              <option>Stunting</option>
+              <option>Gizi Kurang</option>
+              <option>Gizi Buruk</option>
+              <option>Obesitas</option>
+            </select>
+          </div>
+          <div class="form-group full"><label>Catatan</label><textarea id="b-catatan"
+              placeholder="Intervensi, kondisi khusus, dll..."></textarea></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn btn-primary" onclick="saveBalita()">💾 Simpan</button>
+          <button class="btn btn-secondary" onclick="closeModal('modal-balita')">Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Ibu Hamil -->
+  <div class="modal-overlay" id="modal-hamil">
+    <div class="modal">
+      <div class="modal-hd">
+        <h3>Tambah Ibu Hamil</h3><button class="close-btn" onclick="closeModal('modal-hamil')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group"><label>Nama Lengkap</label><input type="text" id="h-nama" placeholder="Nama ibu">
+          </div>
+          <div class="form-group"><label>Usia (tahun)</label><input type="number" id="h-usia"></div>
+          <div class="form-group full"><label>Alamat / RT</label><input type="text" id="h-alamat"></div>
+          <div class="form-group"><label>Posyandu</label>
+            <select id="h-pos">
+              <option>Bougenville</option>
+              <option>Kantil</option>
+              <option>Teratai</option>
+              <option>Anggrek</option>
+              <option>Kenanga</option>
+              <option>Dahlia</option>
+              <option>Melati</option>
+              <option>Mawar</option>
+            </select>
+          </div>
+          <div class="form-group"><label>HPHT</label><input type="date" id="h-hpht"></div>
+          <div class="form-group"><label>Usia Kehamilan (minggu)</label><input type="number" id="h-uk"
+              placeholder="cth: 20"></div>
+          <div class="form-group"><label>Kunjungan ANC ke-</label>
+            <select id="h-anc">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Status Kehamilan</label>
+            <select id="h-status">
+              <option>Normal</option>
+              <option>Risiko Tinggi</option>
+              <option>Butuh Rujukan</option>
+            </select>
+          </div>
+          <div class="form-group"><label>BB (kg)</label><input type="number" step="0.1" id="h-bb"></div>
+          <div class="form-group"><label>TD (mmHg)</label><input type="text" id="h-td" placeholder="cth: 120/80"></div>
+          <div class="form-group full"><label>Catatan</label><textarea id="h-catatan"></textarea></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn btn-primary" onclick="saveHamil()">💾 Simpan</button>
+          <button class="btn btn-secondary" onclick="closeModal('modal-hamil')">Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Lansia -->
+  <div class="modal-overlay" id="modal-lansia">
+    <div class="modal">
+      <div class="modal-hd">
+        <h3>Tambah Data Lansia</h3><button class="close-btn" onclick="closeModal('modal-lansia')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group"><label>Nama Lengkap</label><input type="text" id="l-nama"></div>
+          <div class="form-group"><label>Usia (tahun)</label><input type="number" id="l-usia"></div>
+          <div class="form-group full"><label>Alamat / RT</label><input type="text" id="l-alamat"></div>
+          <div class="form-group"><label>Posyandu</label>
+            <select id="l-pos">
+              <option>Bougenville</option>
+              <option>Kantil</option>
+              <option>Teratai</option>
+              <option>Anggrek</option>
+              <option>Kenanga</option>
+              <option>Dahlia</option>
+              <option>Melati</option>
+              <option>Mawar</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Tanggal Kunjungan</label><input type="date" id="l-tgl"></div>
+          <div class="form-group"><label>Tekanan Darah (mmHg)</label><input type="text" id="l-td" placeholder="120/80">
+          </div>
+          <div class="form-group"><label>Berat Badan (kg)</label><input type="number" step="0.1" id="l-bb"></div>
+          <div class="form-group"><label>Tinggi Badan (cm)</label><input type="number" step="0.1" id="l-tb"></div>
+          <div class="form-group full"><label>Riwayat Penyakit / Keluhan</label><textarea id="l-riwayat"
+              placeholder="Hipertensi, DM, dll..."></textarea></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn btn-primary" onclick="saveLansia()">💾 Simpan</button>
+          <button class="btn btn-secondary" onclick="closeModal('modal-lansia')">Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal ODGJ -->
+  <div class="modal-overlay" id="modal-odgj">
+    <div class="modal">
+      <div class="modal-hd">
+        <h3>Tambah Data ODGJ</h3><button class="close-btn" onclick="closeModal('modal-odgj')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group"><label>Nama Lengkap</label><input type="text" id="o-nama"></div>
+          <div class="form-group"><label>Usia (tahun)</label><input type="number" id="o-usia"></div>
+          <div class="form-group full"><label>Alamat / RT</label><input type="text" id="o-alamat"></div>
+          <div class="form-group"><label>Posyandu</label>
+            <select id="o-pos">
+              <option>Bougenville</option>
+              <option>Kantil</option>
+              <option>Teratai</option>
+              <option>Anggrek</option>
+              <option>Kenanga</option>
+              <option>Dahlia</option>
+              <option>Melati</option>
+              <option>Mawar</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Diagnosa / Kondisi</label><input type="text" id="o-diag"
+              placeholder="Skizofrenia, dll"></div>
+          <div class="form-group"><label>Status Pengobatan</label>
+            <select id="o-obat">
+              <option>Rutin minum obat</option>
+              <option>Tidak rutin</option>
+              <option>Putus obat</option>
+              <option>Belum berobat</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Nama Pendamping / Wali</label><input type="text" id="o-wali"></div>
+          <div class="form-group"><label>Tanggal Pantau</label><input type="date" id="o-tgl"></div>
+          <div class="form-group full"><label>Catatan Kondisi</label><textarea id="o-catatan"></textarea></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn btn-primary" onclick="saveODGJ()">💾 Simpan</button>
+          <button class="btn btn-secondary" onclick="closeModal('modal-odgj')">Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Imunisasi -->
+  <div class="modal-overlay" id="modal-imun">
+    <div class="modal">
+      <div class="modal-hd">
+        <h3>Catat Imunisasi</h3><button class="close-btn" onclick="closeModal('modal-imun')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group"><label>Nama Anak</label><input type="text" id="i-nama"></div>
+          <div class="form-group"><label>Usia (bulan)</label><input type="number" id="i-usia"></div>
+          <div class="form-group full"><label>Alamat</label><input type="text" id="i-alamat"></div>
+          <div class="form-group"><label>Posyandu</label>
+            <select id="i-pos">
+              <option>Bougenville</option>
+              <option>Kantil</option>
+              <option>Teratai</option>
+              <option>Anggrek</option>
+              <option>Kenanga</option>
+              <option>Dahlia</option>
+              <option>Melati</option>
+              <option>Mawar</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Tanggal</label><input type="date" id="i-tgl"></div>
+          <div class="form-group"><label>BCG</label><select id="i-bcg">
+              <option>Belum</option>
+              <option>✅ Sudah</option>
+            </select></div>
+          <div class="form-group"><label>DPT</label><select id="i-dpt">
+              <option>Belum</option>
+              <option>DPT 1</option>
+              <option>DPT 2</option>
+              <option>DPT 3</option>
+            </select></div>
+          <div class="form-group"><label>Polio</label><select id="i-polio">
+              <option>Belum</option>
+              <option>Polio 1</option>
+              <option>Polio 2</option>
+              <option>Polio 3</option>
+              <option>Polio 4</option>
+            </select></div>
+          <div class="form-group"><label>Campak/MR</label><select id="i-campak">
+              <option>Belum</option>
+              <option>✅ Sudah</option>
+            </select></div>
+          <div class="form-group"><label>Hepatitis B</label><select id="i-hep">
+              <option>Belum</option>
+              <option>HB0</option>
+              <option>HB1</option>
+              <option>HB2</option>
+              <option>HB3</option>
+            </select></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn btn-primary" onclick="saveImun()">💾 Simpan</button>
+          <button class="btn btn-secondary" onclick="closeModal('modal-imun')">Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Jamban -->
+  <div class="modal-overlay" id="modal-jamban">
+    <div class="modal">
+      <div class="modal-hd">
+        <h3>Tambah Data Jamban</h3><button class="close-btn" onclick="closeModal('modal-jamban')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group"><label>Nama Kepala Keluarga</label><input type="text" id="j-nama"></div>
+          <div class="form-group"><label>Jumlah Anggota KK</label><input type="number" id="j-angg"></div>
+          <div class="form-group full"><label>Alamat / RT</label><input type="text" id="j-alamat"></div>
+          <div class="form-group"><label>Posyandu</label>
+            <select id="j-pos">
+              <option>Bougenville</option>
+              <option>Kantil</option>
+              <option>Teratai</option>
+              <option>Anggrek</option>
+              <option>Kenanga</option>
+              <option>Dahlia</option>
+              <option>Melati</option>
+              <option>Mawar</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Jenis Jamban</label>
+            <select id="j-jenis">
+              <option>Leher angsa + septik tank</option>
+              <option>Leher angsa</option>
+              <option>Cemplung</option>
+              <option>Tidak punya</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Kondisi</label>
+            <select id="j-kondisi">
+              <option>Baik</option>
+              <option>Cukup</option>
+              <option>Rusak</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Akses Air Bersih</label>
+            <select id="j-air">
+              <option>Ya — PDAM</option>
+              <option>Ya — Sumur</option>
+              <option>Tidak</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Status ODF</label>
+            <select id="j-odf">
+              <option>✅ Sehat</option>
+              <option>⚠️ Perlu perbaikan</option>
+              <option>❌ BAB sembarangan</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button class="btn btn-primary" onclick="saveJamban()">💾 Simpan</button>
+          <button class="btn btn-secondary" onclick="closeModal('modal-jamban')">Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const POSYANDU = ['Bougenville', 'Kantil', 'Teratai', 'Anggrek', 'Kenanga', 'Dahlia', 'Melati', 'Mawar'];
+    const COLORS = ['#2d7a4f', '#1a6b6b', '#1565c0', '#6a1b9a', '#ad1457', '#b86a00', '#c0392b', '#27ae60'];
+
+    // --- DATA STORES & API ---
+    const API_URL = '1ZEbseCVYq2jpo_0gpM4f0bu9l6M_xniLGKnj_NsZv_rINA0vVp_Nhigl';
+
+    let data = {
+      balita: [], hamil: [], lansia: [], odgj: [], imun: [], psn: [], jamban: []
+    };
+
+    async function fetchAwal() {
+      if (API_URL === 'https://script.google.com/macros/s/AKfycbxRP-a-M5GSqTA3VlcaEB90P3gb_SEvqi8OuqcDCGpgcxdSMN1XKJY4h2Gk6jQIWKC_/exec') {
+        alert('PERHATIAN: Anda belum memasukkan URL Google Apps Script pada variabel API_URL di dalam kode.');
+        document.getElementById('global-loader').style.display = 'none';
+        renderDashboard();
+        return;
+      }
+      try {
+        const res = await fetch(API_URL);
+        const json = await res.json();
+        data = json;
+        document.getElementById('global-loader').style.display = 'none';
+        renderDashboard();
+      } catch (err) {
+        alert('Gagal mengambil data dari Google Sheets: ' + err.message);
+        document.getElementById('global-loader').style.display = 'none';
+        renderDashboard();
+      }
+    }
+
+    async function postData(type, payload) {
+      if (API_URL === 'https://script.google.com/macros/s/AKfycbxRP-a-M5GSqTA3VlcaEB90P3gb_SEvqi8OuqcDCGpgcxdSMN1XKJY4h2Gk6jQIWKC_/exec') return;
+      try {
+        document.getElementById('global-loader').querySelector('div:nth-child(2)').textContent = 'Menyimpan data...';
+        document.getElementById('global-loader').style.display = 'flex';
+
+        await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ type, payload }),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+
+        document.getElementById('global-loader').style.display = 'none';
+        document.getElementById('global-loader').querySelector('div:nth-child(2)').textContent = 'Memuat data dari server...';
+      } catch (err) {
+        document.getElementById('global-loader').style.display = 'none';
+        alert('Gagal menyimpan ke server: ' + err.message);
+      }
+    }
+
+    let psnMap, viewMap, psnMarker, viewMarkers = [], psn_lat = null, psn_lng = null;
+
+    // --- NAVIGATION ---
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('page-' + id).classList.add('active');
+      if (window.event && window.event.currentTarget) {
+        window.event.currentTarget.classList.add('active');
+      }
+      document.querySelector('.sidebar').classList.remove('open');
+      if (id === 'psn') initMaps();
+      renderPage(id);
+    }
+
+    function renderPage(id) {
+      if (id === 'dashboard') renderDashboard();
+      if (id === 'balita') renderBalita();
+      if (id === 'ibu_hamil') renderHamil();
+      if (id === 'lansia') renderLansia();
+      if (id === 'odgj') renderODGJ();
+      if (id === 'imunisasi') renderImunisasi();
+      if (id === 'jamban') renderJamban();
+      if (id === 'psn') renderPSN();
+    }
+
+    // --- POSYANDU TABS ---
+    function renderTabs(containerId, fn) {
+      const c = document.getElementById(containerId);
+      c.innerHTML = ['Semua', ...POSYANDU].map((p, i) =>
+        `<div class="pos-tab${i === 0 ? ' active' : ''}" onclick="selectTab(this,'${p}',${fn})">${p}</div>`
+      ).join('');
+    }
+
+    function selectTab(el, pos, fn) {
+      el.closest('.pos-tabs').querySelectorAll('.pos-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      if (fn) fn(pos);
+    }
+
+    // --- DASHBOARD ---
+    function renderDashboard() {
+      const tbody = document.getElementById('pos-summary-tbody');
+      const posData = POSYANDU.map((p, i) => ({
+        pos: p,
+        balita: [18, 15, 20, 12, 17, 14, 16, 16][i],
+        stunting: [3, 2, 5, 2, 4, 3, 3, 2][i],
+        hamil: [2, 3, 2, 1, 3, 2, 2, 2][i],
+        lansia: [12, 10, 14, 8, 13, 11, 10, 11][i],
+        odgj: [1, 0, 1, 0, 2, 0, 1, 1][i],
+        imun: [6, 5, 7, 4, 6, 5, 5, 5][i],
+        jamban: [84, 80, 90, 75, 84, 80, 80, 80][i]
+      }));
+      tbody.innerHTML = posData.map(d => `<tr>
+    <td><strong>${d.pos}</strong></td>
+    <td>${d.balita}</td>
+    <td><span class="badge ${d.stunting > 3 ? 'badge-red' : 'badge-amber'}">${d.stunting}</span></td>
+    <td>${d.hamil}</td>
+    <td>${d.lansia}</td>
+    <td>${d.odgj}</td>
+    <td>${d.imun}</td>
+    <td><span class="badge ${d.jamban >= 80 ? 'badge-green' : 'badge-amber'}">${d.jamban}%</span></td>
+  </tr>`).join('');
+
+      drawChart('chartStunting', 'bar', POSYANDU, [[3, 2, 5, 2, 4, 3, 3, 2]], ['Stunting'], ['#c0392b']);
+      drawChart('chartImun', 'bar', POSYANDU, [[84, 80, 90, 75, 84, 80, 80, 80]], ['Cakupan %'], ['#2d7a4f']);
+    }
+
+    // --- BALITA ---
+    function renderBalita(filter = 'Semua') {
+      renderTabs('balita-tabs', renderBalita);
+      const rows = filter === 'Semua' ? data.balita : data.balita.filter(d => d.pos === filter);
+      const tbody = document.getElementById('balita-tbody');
+      tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
+    <td><strong>${d.nama}</strong></td>
+    <td>${d.usia} bln</td>
+    <td>${d.alamat}</td>
+    <td>${d.pos}</td>
+    <td>${d.bb}</td>
+    <td>${d.tb}</td>
+    <td>${d.lk}</td>
+    <td><span class="badge ${d.status === 'Normal' ? 'badge-green' : d.status === 'Stunting' ? 'badge-red' : 'badge-amber'}">${d.status}</span></td>
+    <td><button class="btn btn-danger btn-sm" onclick="delRow('balita',${i})">Hapus</button></td>
+  </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--text3);">Belum ada data</td></tr>';
+      drawChart('chartStunting2', 'bar', POSYANDU, [[3, 2, 5, 2, 4, 3, 3, 2]], ['Stunting'], ['#c0392b']);
+    }
+
+    async function saveBalita() {
+      const d = {
+        nama: v('b-nama'), usia: +v('b-usia'), alamat: v('b-alamat'),
+        pos: v('b-pos'), tgl: v('b-tgl'), bb: +v('b-bb'), tb: +v('b-tb'),
+        lk: +v('b-lk'), ll: +v('b-ll'), status: v('b-status'), catatan: v('b-catatan')
+      };
+      if (!d.nama) return alert('Nama harus diisi');
+      data.balita.unshift(d);
+      closeModal('modal-balita');
+      renderBalita();
+      await postData('balita', d);
+    }
+
+    // --- IBU HAMIL ---
+    function renderHamil(filter = 'Semua') {
+      renderTabs('hamil-tabs', renderHamil);
+      const rows = filter === 'Semua' ? data.hamil : data.hamil.filter(d => d.pos === filter);
+      const tbody = document.getElementById('hamil-tbody');
+      tbody.innerHTML = rows.length ? rows.map((d, i) => {
+        const hpl = new Date(d.hpht);
+        hpl.setDate(hpl.getDate() + 280);
+        return `<tr>
+      <td><strong>${d.nama}</strong></td>
+      <td>${d.usia} thn</td>
+      <td>${d.alamat}</td>
+      <td>${d.pos}</td>
+      <td>${d.uk} minggu</td>
+      <td>${d.hpht}</td>
+      <td>${hpl.toISOString().split('T')[0]}</td>
+      <td>ANC ke-${d.anc}</td>
+      <td><span class="badge ${d.status === 'Normal' ? 'badge-green' : d.status === 'Risiko Tinggi' ? 'badge-red' : 'badge-amber'}">${d.status}</span></td>
+      <td><button class="btn btn-danger btn-sm" onclick="delRow('hamil',${i})">Hapus</button></td>
+    </tr>`;
+      }).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--text3);">Belum ada data</td></tr>';
+    }
+
+    async function saveHamil() {
+      const d = {
+        nama: v('h-nama'), usia: +v('h-usia'), alamat: v('h-alamat'), pos: v('h-pos'),
+        hpht: v('h-hpht'), uk: +v('h-uk'), anc: v('h-anc'), status: v('h-status'),
+        bb: +v('h-bb'), td: v('h-td'), catatan: v('h-catatan')
+      };
+      if (!d.nama) return alert('Nama harus diisi');
+      data.hamil.unshift(d);
+      closeModal('modal-hamil');
+      renderHamil();
+      await postData('hamil', d);
+    }
+
+    // --- LANSIA ---
+    function renderLansia(filter = 'Semua') {
+      renderTabs('lansia-tabs', renderLansia);
+      const rows = filter === 'Semua' ? data.lansia : data.lansia.filter(d => d.pos === filter);
+      const tbody = document.getElementById('lansia-tbody');
+      tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
+    <td><strong>${d.nama}</strong></td>
+    <td>${d.usia} thn</td>
+    <td>${d.alamat}</td>
+    <td>${d.pos}</td>
+    <td>${d.td}</td>
+    <td>${d.bb}</td>
+    <td>${d.tb}</td>
+    <td>${d.riwayat}</td>
+    <td>${d.tgl}</td>
+    <td><button class="btn btn-danger btn-sm" onclick="delRow('lansia',${i})">Hapus</button></td>
+  </tr>`).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--text3);">Belum ada data</td></tr>';
+    }
+
+    async function saveLansia() {
+      const d = {
+        nama: v('l-nama'), usia: +v('l-usia'), alamat: v('l-alamat'), pos: v('l-pos'),
+        tgl: v('l-tgl'), td: v('l-td'), bb: +v('l-bb'), tb: +v('l-tb'), riwayat: v('l-riwayat')
+      };
+      if (!d.nama) return alert('Nama harus diisi');
+      data.lansia.unshift(d);
+      closeModal('modal-lansia');
+      renderLansia();
+      await postData('lansia', d);
+    }
+
+    // --- ODGJ ---
+    function renderODGJ(filter = 'Semua') {
+      renderTabs('odgj-tabs', renderODGJ);
+      const rows = filter === 'Semua' ? data.odgj : data.odgj.filter(d => d.pos === filter);
+      const tbody = document.getElementById('odgj-tbody');
+      tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
+    <td><strong>${d.nama}</strong></td>
+    <td>${d.usia} thn</td>
+    <td>${d.alamat}</td>
+    <td>${d.pos}</td>
+    <td>${d.diag}</td>
+    <td><span class="badge ${d.obat.includes('Rutin') ? 'badge-green' : 'badge-red'}">${d.obat}</span></td>
+    <td>${d.wali}</td>
+    <td>${d.tgl}</td>
+    <td><button class="btn btn-danger btn-sm" onclick="delRow('odgj',${i})">Hapus</button></td>
+  </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--text3);">Belum ada data</td></tr>';
+    }
+
+    async function saveODGJ() {
+      const d = {
+        nama: v('o-nama'), usia: +v('o-usia'), alamat: v('o-alamat'), pos: v('o-pos'),
+        diag: v('o-diag'), obat: v('o-obat'), wali: v('o-wali'), tgl: v('o-tgl'), catatan: v('o-catatan')
+      };
+      if (!d.nama) return alert('Nama harus diisi');
+      data.odgj.unshift(d);
+      closeModal('modal-odgj');
+      renderODGJ();
+      await postData('odgj', d);
+    }
+
+    // --- IMUNISASI ---
+    function renderImunisasi(filter = 'Semua') {
+      renderTabs('imun-tabs', renderImunisasi);
+      const rows = filter === 'Semua' ? data.imun : data.imun.filter(d => d.pos === filter);
+      const tbody = document.getElementById('imun-tbody');
+      tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
+    <td><strong>${d.nama}</strong></td>
+    <td>${d.usia} bln</td>
+    <td>${d.pos}</td>
+    <td>${d.bcg}</td>
+    <td>${d.dpt}</td>
+    <td>${d.polio}</td>
+    <td>${d.campak}</td>
+    <td>${d.hep}</td>
+    <td>${d.tgl}</td>
+  </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--text3);">Belum ada data</td></tr>';
+      drawChart('chartImun2', 'bar', POSYANDU, [[84, 80, 90, 75, 84, 80, 80, 80]], ['Cakupan %'], ['#1a6b6b']);
+    }
+
+    async function saveImun() {
+      const d = {
+        nama: v('i-nama'), usia: +v('i-usia'), alamat: v('i-alamat'), pos: v('i-pos'),
+        tgl: v('i-tgl'), bcg: v('i-bcg'), dpt: v('i-dpt'), polio: v('i-polio'), campak: v('i-campak'), hep: v('i-hep')
+      };
+      if (!d.nama) return alert('Nama harus diisi');
+      data.imun.unshift(d);
+      closeModal('modal-imun');
+      renderImunisasi();
+      await postData('imun', d);
+    }
+
+    // --- PSN ---
+    function initMaps() {
+      if (!psnMap) {
+        psnMap = L.map('psn-map').setView([-6.95, 110.42], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(psnMap);
+        psnMap.on('click', function (e) {
+          psn_lat = e.latlng.lat.toFixed(6);
+          psn_lng = e.latlng.lng.toFixed(6);
+          document.getElementById('psn-coords').textContent = `📍 Koordinat: ${psn_lat}, ${psn_lng}`;
+          if (psnMarker) psnMap.removeLayer(psnMarker);
+          psnMarker = L.marker([psn_lat, psn_lng]).addTo(psnMap).bindPopup('Lokasi PSN dipilih').openPopup();
+        });
+      }
+      if (!viewMap) {
+        viewMap = L.map('map-view').setView([-6.95, 110.42], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(viewMap);
+      }
+      setTimeout(() => { psnMap.invalidateSize(); viewMap.invalidateSize(); }, 300);
+    }
+
+    function renderPSN() {
+      renderTabs('psn-tabs', null);
+      updatePSNList();
+    }
+
+    function handlePhotos(input) {
+      const preview = document.getElementById('photo-preview');
+      Array.from(input.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const div = document.createElement('div');
+          div.className = 'photo-thumb';
+          div.innerHTML = `<img src="${e.target.result}" alt="foto"><button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;
+          preview.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function savePSN() {
+      if (!psn_lat) return alert('Tandai lokasi di peta terlebih dahulu!');
+      const photos = Array.from(document.querySelectorAll('#photo-preview img')).map(i => i.src);
+      const d = {
+        pos: v('psn-pos'), alamat: v('psn-alamat'), tgl: v('psn-tgl'),
+        petugas: v('psn-petugas'), temuan: v('psn-temuan'),
+        catatan: v('psn-catatan'), lat: psn_lat, lng: psn_lng, photos
+      };
+      if (!d.alamat) return alert('Alamat harus diisi');
+      data.psn.push(d);
+      const icon = L.divIcon({
+        html: `<div style="background:${d.temuan.includes('positif') || d.temuan.includes('jentik, sudah') ? '#c0392b' : '#2d7a4f'};width:16px;height:16px;border-radius:50%;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>`,
+        iconSize: [16, 16], className: ''
+      });
+      const m = L.marker([d.lat, d.lng], { icon }).addTo(viewMap);
+      m.bindPopup(`<strong>${d.pos}</strong><br>${d.alamat}<br>${d.temuan}<br><small>${d.tgl}</small>`);
+      viewMarkers.push(m);
+      document.getElementById('psn-count-badge').textContent = data.psn.length + ' titik';
+      psn_lat = null; psn_lng = null;
+      if (psnMarker) { psnMap.removeLayer(psnMarker); psnMarker = null; }
+      document.getElementById('psn-coords').textContent = 'Klik peta untuk menandai lokasi';
+      document.getElementById('photo-preview').innerHTML = '';
+      document.getElementById('psn-catatan').value = '';
+      updatePSNList();
+      await postData('psn', d);
+      alert('✅ Data PSN berhasil disimpan!');
+    }
+
+    function updatePSNList() {
+      const list = document.getElementById('psn-list');
+      if (!data.psn.length) { list.innerHTML = '<p style="color:var(--text3);font-size:13px;">Belum ada data PSN</p>'; return; }
+      list.innerHTML = data.psn.slice().reverse().map(d => `
+    <div class="card" style="padding:12px 14px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-weight:600;font-size:13px;">${d.pos} — ${d.alamat}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px;">${d.temuan}</div>
+          <div style="font-size:11px;color:var(--text3);">📅 ${d.tgl} &nbsp;👤 ${d.petugas}</div>
+        </div>
+        <span class="badge ${d.temuan.includes('Tidak ada') ? 'badge-green' : 'badge-red'}" style="flex-shrink:0">
+          ${d.temuan.includes('Tidak ada') ? 'Aman' : 'Ditemukan'}
+        </span>
+      </div>
+      ${d.photos.length ? `<div style="display:flex;gap:6px;margin-top:8px;">${d.photos.map(p => `<img src="${p}" style="width:48px;height:48px;border-radius:6px;object-fit:cover;">`).join('')}</div>` : ''}
+    </div>
+  `).join('');
+    }
+
+    // --- JAMBAN ---
+    function renderJamban(filter = 'Semua') {
+      renderTabs('jamban-tabs', renderJamban);
+      const rows = filter === 'Semua' ? data.jamban : data.jamban.filter(d => d.pos === filter);
+      const tbody = document.getElementById('jamban-tbody');
+      tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
+    <td><strong>${d.nama}</strong></td>
+    <td>${d.alamat}</td>
+    <td>${d.pos}</td>
+    <td>${d.jenis}</td>
+    <td><span class="badge ${d.kondisi === 'Baik' ? 'badge-green' : d.kondisi === 'Cukup' ? 'badge-amber' : 'badge-red'}">${d.kondisi}</span></td>
+    <td>${d.air}</td>
+    <td>${d.odf}</td>
+    <td><button class="btn btn-danger btn-sm" onclick="delRow('jamban',${i})">Hapus</button></td>
+  </tr>`).join('') : '<tr><td colspan="8" style="text-align:center;color:var(--text3);">Belum ada data</td></tr>';
+    }
+
+    async function saveJamban() {
+      const d = {
+        nama: v('j-nama'), angg: +v('j-angg'), alamat: v('j-alamat'), pos: v('j-pos'),
+        jenis: v('j-jenis'), kondisi: v('j-kondisi'), air: v('j-air'), odf: v('j-odf')
+      };
+      if (!d.nama) return alert('Nama KK harus diisi');
+      data.jamban.unshift(d);
+      closeModal('modal-jamban');
+      renderJamban();
+      await postData('jamban', d);
+    }
+
+    // --- CHARTS ---
+    const chartInstances = {};
+    function drawChart(id, type, labels, datasets, dsLabels, colors) {
+      const canvas = document.getElementById(id);
+      if (!canvas) return;
+      if (chartInstances[id]) chartInstances[id].destroy();
+      chartInstances[id] = new Chart(canvas, {
+        type,
+        data: {
+          labels,
+          datasets: datasets.map((d, i) => ({
+            label: dsLabels[i],
+            data: d,
+            backgroundColor: colors[i] + 'cc',
+            borderColor: colors[i],
+            borderWidth: 1.5,
+            borderRadius: 5
+          }))
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: datasets.length > 1 } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#eee' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function drawTren() {
+      const canvas = document.getElementById('chartTren');
+      if (!canvas || chartInstances['chartTren']) return;
+      chartInstances['chartTren'] = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: ['Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt'],
+          datasets: [
+            { label: 'Balita Timbang', data: [115, 118, 122, 124, 126, 128], borderColor: '#2d7a4f', tension: 0.4, fill: false },
+            { label: 'Stunting', data: [28, 27, 26, 25, 25, 24], borderColor: '#c0392b', tension: 0.4, fill: false },
+            { label: 'Imunisasi', data: [38, 40, 41, 42, 42, 43], borderColor: '#1565c0', tension: 0.4, fill: false },
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: false } } }
+      });
+    }
+
+    // --- UTILS ---
+    function v(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function delRow(type, idx) {
+      if (!confirm('Hapus data ini?')) return;
+      data[type].splice(idx, 1);
+      renderPage(type === 'ibu_hamil' ? 'ibu_hamil' : type);
+    }
+    function filterByPosyandu() { /* global filter — handled per page */ }
+
+    // --- CLOSE MODAL ON OVERLAY CLICK ---
+    document.querySelectorAll('.modal-overlay').forEach(el => {
+      el.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('open'); });
+    });
+
+    // --- INIT ---
+    fetchAwal();
+    setTimeout(drawTren, 500);
+  </script>
+</body>
+
+</html>
