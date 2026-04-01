@@ -1787,21 +1787,16 @@
     const COLORS = ['#2d7a4f', '#1a6b6b', '#1565c0', '#6a1b9a', '#ad1457', '#b86a00', '#c0392b', '#27ae60'];
 
     // --- DATA STORES & API ---
-    const API_URL = '1ZEbseCVYq2jpo_0gpM4f0bu9l6M_xniLGKnj_NsZv_rINA0vVp_Nhigl';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxlqlkxi2xR-XKm_PHm0HTh3mQwKW0NOclaUXwPJFGDNmum6yKLYjNAbW1bzOYgyUR1/exec';
 
     let data = {
       balita: [], hamil: [], lansia: [], odgj: [], imun: [], psn: [], jamban: []
     };
 
     async function fetchAwal() {
-      if (API_URL === 'https://script.google.com/macros/s/AKfycbxRP-a-M5GSqTA3VlcaEB90P3gb_SEvqi8OuqcDCGpgcxdSMN1XKJY4h2Gk6jQIWKC_/exec') {
-        alert('PERHATIAN: Anda belum memasukkan URL Google Apps Script pada variabel API_URL di dalam kode.');
-        document.getElementById('global-loader').style.display = 'none';
-        renderDashboard();
-        return;
-      }
       try {
         const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
         const json = await res.json();
         data = json;
         document.getElementById('global-loader').style.display = 'none';
@@ -1814,7 +1809,6 @@
     }
 
     async function postData(type, payload) {
-      if (API_URL === 'https://script.google.com/macros/s/AKfycbxRP-a-M5GSqTA3VlcaEB90P3gb_SEvqi8OuqcDCGpgcxdSMN1XKJY4h2Gk6jQIWKC_/exec') return;
       try {
         document.getElementById('global-loader').querySelector('div:nth-child(2)').textContent = 'Menyimpan data...';
         document.getElementById('global-loader').style.display = 'flex';
