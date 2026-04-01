@@ -856,25 +856,25 @@
           <div class="stat-card">
             <div class="stat-icon">👶</div>
             <div class="stat-label">Total Balita</div>
-            <div class="stat-num" id="dash-balita">0</div>
+            <div class="stat-num" id="dash-balita">—</div>
             <div class="stat-sub" id="dash-stunting-sub"><span class="badge badge-red">0 stunting</span></div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">🤱</div>
             <div class="stat-label">Ibu Hamil</div>
-            <div class="stat-num" id="dash-hamil">0</div>
+            <div class="stat-num" id="dash-hamil">—</div>
             <div class="stat-sub">Aktif terdaftar</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">👴</div>
             <div class="stat-label">Lansia</div>
-            <div class="stat-num" id="dash-lansia">0</div>
+            <div class="stat-num" id="dash-lansia">—</div>
             <div class="stat-sub">≥ 60 tahun</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">🧠</div>
             <div class="stat-label">ODGJ</div>
-            <div class="stat-num" id="dash-odgj">0</div>
+            <div class="stat-num" id="dash-odgj">—</div>
             <div class="stat-sub">Terpantau</div>
           </div>
         </div>
@@ -883,19 +883,19 @@
           <div class="stat-card">
             <div class="stat-icon">💉</div>
             <div class="stat-label">Imunisasi Bulan Ini</div>
-            <div class="stat-num" id="dash-imun">0</div>
+            <div class="stat-num" id="dash-imun">—</div>
             <div class="stat-sub" id="dash-imun-sub">Belum ada data</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">🦟</div>
             <div class="stat-label">Lokasi PSN Dicek</div>
-            <div class="stat-num" id="dash-psn">0</div>
+            <div class="stat-num" id="dash-psn">—</div>
             <div class="stat-sub">Total kegiatan</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">🚽</div>
             <div class="stat-label">Jamban Sehat</div>
-            <div class="stat-num" id="dash-jamban-pct">0<small style="font-size:14px">%</small></div>
+            <div class="stat-num" id="dash-jamban-pct">—</div>
             <div class="stat-sub" id="dash-jamban-sub">Belum ada data</div>
           </div>
         </div>
@@ -1794,17 +1794,25 @@
     }
 
     // --- POSYANDU TABS ---
-    function renderTabs(containerId, fn) {
+    function renderTabs(containerId, fnName) {
       const c = document.getElementById(containerId);
       c.innerHTML = ['Semua', ...POSYANDU].map((p, i) =>
-        `<div class="pos-tab${i === 0 ? ' active' : ''}" onclick="selectTab(this,'${p}',${fn})">${p}</div>`
+        `<div class="pos-tab${i === 0 ? ' active' : ''}" onclick="selectTab(this,'${p}','${fnName}')">${p}</div>`
       ).join('');
     }
 
-    function selectTab(el, pos, fn) {
+    function selectTab(el, pos, fnName) {
       el.closest('.pos-tabs').querySelectorAll('.pos-tab').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
-      if (fn) fn(pos);
+      const fns = {
+        'renderBalita': renderBalita,
+        'renderHamil': renderHamil,
+        'renderLansia': renderLansia,
+        'renderODGJ': renderODGJ,
+        'renderImunisasi': renderImunisasi,
+        'renderJamban': renderJamban
+      };
+      if (fnName && fns[fnName]) fns[fnName](pos);
     }
 
     // --- DASHBOARD ---
@@ -1888,7 +1896,7 @@
 
     // --- BALITA ---
     function renderBalita(filter = 'Semua') {
-      renderTabs('balita-tabs', renderBalita);
+      renderTabs('balita-tabs', 'renderBalita');
       const rows = filter === 'Semua' ? data.balita : data.balita.filter(d => d.pos === filter);
       const tbody = document.getElementById('balita-tbody');
       tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
@@ -1921,7 +1929,7 @@
 
     // --- IBU HAMIL ---
     function renderHamil(filter = 'Semua') {
-      renderTabs('hamil-tabs', renderHamil);
+      renderTabs('hamil-tabs', 'renderHamil');
       const rows = filter === 'Semua' ? data.hamil : data.hamil.filter(d => d.pos === filter);
       const tbody = document.getElementById('hamil-tbody');
       tbody.innerHTML = rows.length ? rows.map((d, i) => {
@@ -1957,7 +1965,7 @@
 
     // --- LANSIA ---
     function renderLansia(filter = 'Semua') {
-      renderTabs('lansia-tabs', renderLansia);
+      renderTabs('lansia-tabs', 'renderLansia');
       const rows = filter === 'Semua' ? data.lansia : data.lansia.filter(d => d.pos === filter);
       const tbody = document.getElementById('lansia-tbody');
       tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
@@ -1988,7 +1996,7 @@
 
     // --- ODGJ ---
     function renderODGJ(filter = 'Semua') {
-      renderTabs('odgj-tabs', renderODGJ);
+      renderTabs('odgj-tabs', 'renderODGJ');
       const rows = filter === 'Semua' ? data.odgj : data.odgj.filter(d => d.pos === filter);
       const tbody = document.getElementById('odgj-tbody');
       tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
@@ -2018,7 +2026,7 @@
 
     // --- IMUNISASI ---
     function renderImunisasi(filter = 'Semua') {
-      renderTabs('imun-tabs', renderImunisasi);
+      renderTabs('imun-tabs', 'renderImunisasi');
       const rows = filter === 'Semua' ? data.imun : data.imun.filter(d => d.pos === filter);
       const tbody = document.getElementById('imun-tbody');
       tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
@@ -2137,7 +2145,7 @@
 
     // --- JAMBAN ---
     function renderJamban(filter = 'Semua') {
-      renderTabs('jamban-tabs', renderJamban);
+      renderTabs('jamban-tabs', 'renderJamban');
       const rows = filter === 'Semua' ? data.jamban : data.jamban.filter(d => d.pos === filter);
       const tbody = document.getElementById('jamban-tbody');
       tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
