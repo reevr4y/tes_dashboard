@@ -856,25 +856,25 @@
           <div class="stat-card">
             <div class="stat-icon">👶</div>
             <div class="stat-label">Total Balita</div>
-            <div class="stat-num" id="dash-balita">128</div>
-            <div class="stat-sub"><span class="badge badge-red">24 stunting</span></div>
+            <div class="stat-num" id="dash-balita">0</div>
+            <div class="stat-sub" id="dash-stunting-sub"><span class="badge badge-red">0 stunting</span></div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">🤱</div>
             <div class="stat-label">Ibu Hamil</div>
-            <div class="stat-num" id="dash-hamil">17</div>
+            <div class="stat-num" id="dash-hamil">0</div>
             <div class="stat-sub">Aktif terdaftar</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">👴</div>
             <div class="stat-label">Lansia</div>
-            <div class="stat-num" id="dash-lansia">89</div>
+            <div class="stat-num" id="dash-lansia">0</div>
             <div class="stat-sub">≥ 60 tahun</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">🧠</div>
             <div class="stat-label">ODGJ</div>
-            <div class="stat-num" id="dash-odgj">6</div>
+            <div class="stat-num" id="dash-odgj">0</div>
             <div class="stat-sub">Terpantau</div>
           </div>
         </div>
@@ -883,20 +883,20 @@
           <div class="stat-card">
             <div class="stat-icon">💉</div>
             <div class="stat-label">Imunisasi Bulan Ini</div>
-            <div class="stat-num">43</div>
-            <div class="stat-sub">Dari 50 sasaran</div>
+            <div class="stat-num" id="dash-imun">0</div>
+            <div class="stat-sub" id="dash-imun-sub">Belum ada data</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">🦟</div>
             <div class="stat-label">Lokasi PSN Dicek</div>
-            <div class="stat-num">12</div>
-            <div class="stat-sub">Bulan ini</div>
+            <div class="stat-num" id="dash-psn">0</div>
+            <div class="stat-sub">Total kegiatan</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">🚽</div>
             <div class="stat-label">Jamban Sehat</div>
-            <div class="stat-num">78<small style="font-size:14px">%</small></div>
-            <div class="stat-sub">312 dari 400 KK</div>
+            <div class="stat-num" id="dash-jamban-pct">0<small style="font-size:14px">%</small></div>
+            <div class="stat-sub" id="dash-jamban-sub">Belum ada data</div>
           </div>
         </div>
 
@@ -1361,90 +1361,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Balita ditimbang</td>
-                    <td>18</td>
-                    <td>15</td>
-                    <td>20</td>
-                    <td>12</td>
-                    <td>17</td>
-                    <td>14</td>
-                    <td>16</td>
-                    <td>16</td>
-                    <td><strong>128</strong></td>
-                  </tr>
-                  <tr>
-                    <td>Stunting</td>
-                    <td>3</td>
-                    <td>2</td>
-                    <td>5</td>
-                    <td>2</td>
-                    <td>4</td>
-                    <td>3</td>
-                    <td>3</td>
-                    <td>2</td>
-                    <td><strong>24</strong></td>
-                  </tr>
-                  <tr>
-                    <td>Ibu hamil ANC</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>2</td>
-                    <td>1</td>
-                    <td>3</td>
-                    <td>2</td>
-                    <td>2</td>
-                    <td>2</td>
-                    <td><strong>17</strong></td>
-                  </tr>
-                  <tr>
-                    <td>Lansia hadir</td>
-                    <td>12</td>
-                    <td>10</td>
-                    <td>14</td>
-                    <td>8</td>
-                    <td>13</td>
-                    <td>11</td>
-                    <td>10</td>
-                    <td>11</td>
-                    <td><strong>89</strong></td>
-                  </tr>
-                  <tr>
-                    <td>Imunisasi</td>
-                    <td>6</td>
-                    <td>5</td>
-                    <td>7</td>
-                    <td>4</td>
-                    <td>6</td>
-                    <td>5</td>
-                    <td>5</td>
-                    <td>5</td>
-                    <td><strong>43</strong></td>
-                  </tr>
-                  <tr>
-                    <td>PSN dikunjungi</td>
-                    <td>2</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>1</td>
-                    <td><strong>12</strong></td>
-                  </tr>
-                  <tr>
-                    <td>KK jamban sehat</td>
-                    <td>42</td>
-                    <td>36</td>
-                    <td>48</td>
-                    <td>30</td>
-                    <td>42</td>
-                    <td>36</td>
-                    <td>40</td>
-                    <td>38</td>
-                    <td><strong>312</strong></td>
-                  </tr>
+                  <tr id="lap-row-balita"></tr>
+                  <tr id="lap-row-stunting"></tr>
+                  <tr id="lap-row-hamil"></tr>
+                  <tr id="lap-row-lansia"></tr>
+                  <tr id="lap-row-imun"></tr>
+                  <tr id="lap-row-psn"></tr>
+                  <tr id="lap-row-jamban"></tr>
                 </tbody>
               </table>
             </div>
@@ -1851,6 +1774,7 @@
       if (id === 'imunisasi') renderImunisasi();
       if (id === 'jamban') renderJamban();
       if (id === 'psn') renderPSN();
+      if (id === 'laporan') renderLaporan();
     }
 
     // --- POSYANDU TABS ---
@@ -1869,30 +1793,81 @@
 
     // --- DASHBOARD ---
     function renderDashboard() {
-      const tbody = document.getElementById('pos-summary-tbody');
-      const posData = POSYANDU.map((p, i) => ({
-        pos: p,
-        balita: [18, 15, 20, 12, 17, 14, 16, 16][i],
-        stunting: [3, 2, 5, 2, 4, 3, 3, 2][i],
-        hamil: [2, 3, 2, 1, 3, 2, 2, 2][i],
-        lansia: [12, 10, 14, 8, 13, 11, 10, 11][i],
-        odgj: [1, 0, 1, 0, 2, 0, 1, 1][i],
-        imun: [6, 5, 7, 4, 6, 5, 5, 5][i],
-        jamban: [84, 80, 90, 75, 84, 80, 80, 80][i]
-      }));
-      tbody.innerHTML = posData.map(d => `<tr>
-    <td><strong>${d.pos}</strong></td>
-    <td>${d.balita}</td>
-    <td><span class="badge ${d.stunting > 3 ? 'badge-red' : 'badge-amber'}">${d.stunting}</span></td>
-    <td>${d.hamil}</td>
-    <td>${d.lansia}</td>
-    <td>${d.odgj}</td>
-    <td>${d.imun}</td>
-    <td><span class="badge ${d.jamban >= 80 ? 'badge-green' : 'badge-amber'}">${d.jamban}%</span></td>
-  </tr>`).join('');
+      // Hitung dari data real
+      const totalBalita   = data.balita.length;
+      const totalStunting = data.balita.filter(d => d.status === 'Stunting').length;
+      const totalHamil    = data.hamil.length;
+      const totalLansia   = data.lansia.length;
+      const totalODGJ     = data.odgj.length;
+      const totalImun     = data.imun.length;
+      const totalPSN      = data.psn.length;
+      const totalJamban   = data.jamban.length;
+      const jambanSehat   = data.jamban.filter(d => d.odf && d.odf.includes('Sehat')).length;
+      const pctJamban     = totalJamban > 0 ? Math.round(jambanSehat / totalJamban * 100) : 0;
 
-      drawChart('chartStunting', 'bar', POSYANDU, [[3, 2, 5, 2, 4, 3, 3, 2]], ['Stunting'], ['#c0392b']);
-      drawChart('chartImun', 'bar', POSYANDU, [[84, 80, 90, 75, 84, 80, 80, 80]], ['Cakupan %'], ['#2d7a4f']);
+      // Update kartu statistik
+      document.getElementById('dash-balita').textContent = totalBalita;
+      document.getElementById('dash-stunting-sub').innerHTML = `<span class="badge badge-red">${totalStunting} stunting</span>`;
+      document.getElementById('dash-hamil').textContent = totalHamil;
+      document.getElementById('dash-lansia').textContent = totalLansia;
+      document.getElementById('dash-odgj').textContent = totalODGJ;
+      document.getElementById('dash-imun').textContent = totalImun;
+      document.getElementById('dash-psn').textContent = totalPSN;
+      document.getElementById('dash-jamban-pct').innerHTML = pctJamban + '<small style="font-size:14px">%</small>';
+      document.getElementById('dash-jamban-sub').textContent = jambanSehat + ' dari ' + totalJamban + ' KK';
+
+      // Update kartu halaman balita
+      if (document.getElementById('balita-total')) {
+        document.getElementById('balita-total').textContent = totalBalita;
+        document.getElementById('balita-stunting').textContent = totalStunting;
+        const pctStunt = totalBalita > 0 ? (totalStunting/totalBalita*100).toFixed(1) : 0;
+        document.getElementById('balita-stunting-pct').textContent = pctStunt + '% dari total';
+        const giziBuruk = data.balita.filter(d => d.status === 'Gizi Buruk').length;
+        document.getElementById('balita-gizi-buruk').textContent = giziBuruk;
+      }
+
+      // Update kartu halaman jamban
+      if (document.getElementById('jamban-total')) {
+        document.getElementById('jamban-total').textContent = totalJamban;
+        document.getElementById('jamban-sehat').textContent = jambanSehat;
+        document.getElementById('jamban-belum').textContent = totalJamban - jambanSehat;
+      }
+
+      // Tabel ringkasan per posyandu — dari data real
+      const tbody = document.getElementById('pos-summary-tbody');
+      const posData = POSYANDU.map(p => {
+        const b  = data.balita.filter(d => d.pos === p);
+        const st = b.filter(d => d.status === 'Stunting').length;
+        const h  = data.hamil.filter(d => d.pos === p).length;
+        const l  = data.lansia.filter(d => d.pos === p).length;
+        const o  = data.odgj.filter(d => d.pos === p).length;
+        const im = data.imun.filter(d => d.pos === p).length;
+        const jAll = data.jamban.filter(d => d.pos === p);
+        const jSehat = jAll.filter(d => d.odf && d.odf.includes('Sehat')).length;
+        const jPct = jAll.length > 0 ? Math.round(jSehat / jAll.length * 100) : 0;
+        return { pos: p, balita: b.length, stunting: st, hamil: h, lansia: l, odgj: o, imun: im, jamban: jPct };
+      });
+
+      tbody.innerHTML = posData.map(d => `<tr>
+        <td><strong>${d.pos}</strong></td>
+        <td>${d.balita}</td>
+        <td><span class="badge ${d.stunting > 3 ? 'badge-red' : d.stunting > 0 ? 'badge-amber' : 'badge-green'}">${d.stunting}</span></td>
+        <td>${d.hamil}</td>
+        <td>${d.lansia}</td>
+        <td>${d.odgj}</td>
+        <td>${d.imun}</td>
+        <td><span class="badge ${d.jamban >= 80 ? 'badge-green' : 'badge-amber'}">${d.jamban}%</span></td>
+      </tr>`).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--text3);">Belum ada data</td></tr>';
+
+      // Grafik dari data real
+      const stuntingPerPos = POSYANDU.map(p => data.balita.filter(d => d.pos === p && d.status === 'Stunting').length);
+      const imunPerPos = POSYANDU.map(p => {
+        const total = data.balita.filter(d => d.pos === p).length;
+        const imun  = data.imun.filter(d => d.pos === p).length;
+        return total > 0 ? Math.round(imun / total * 100) : 0;
+      });
+      drawChart('chartStunting', 'bar', POSYANDU, [stuntingPerPos], ['Stunting'], ['#c0392b']);
+      drawChart('chartImun', 'bar', POSYANDU, [imunPerPos], ['Cakupan %'], ['#2d7a4f']);
     }
 
     // --- BALITA ---
@@ -1911,7 +1886,8 @@
     <td><span class="badge ${d.status === 'Normal' ? 'badge-green' : d.status === 'Stunting' ? 'badge-red' : 'badge-amber'}">${d.status}</span></td>
     <td><button class="btn btn-danger btn-sm" onclick="delRow('balita',${i})">Hapus</button></td>
   </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--text3);">Belum ada data</td></tr>';
-      drawChart('chartStunting2', 'bar', POSYANDU, [[3, 2, 5, 2, 4, 3, 3, 2]], ['Stunting'], ['#c0392b']);
+      const st2 = POSYANDU.map(p => data.balita.filter(d => d.pos === p && d.status === 'Stunting').length);
+      drawChart('chartStunting2', 'bar', POSYANDU, [st2], ['Stunting'], ['#c0392b']);
     }
 
     async function saveBalita() {
@@ -2040,7 +2016,8 @@
     <td>${d.hep}</td>
     <td>${d.tgl}</td>
   </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--text3);">Belum ada data</td></tr>';
-      drawChart('chartImun2', 'bar', POSYANDU, [[84, 80, 90, 75, 84, 80, 80, 80]], ['Cakupan %'], ['#1a6b6b']);
+      const im2 = POSYANDU.map(p => { const tot = data.balita.filter(d => d.pos===p).length; const im = data.imun.filter(d => d.pos===p).length; return tot>0 ? Math.round(im/tot*100) : 0; });
+      drawChart('chartImun2', 'bar', POSYANDU, [im2], ['Cakupan %'], ['#1a6b6b']);
     }
 
     async function saveImun() {
@@ -2169,6 +2146,33 @@
       closeModal('modal-jamban');
       renderJamban();
       await postData('jamban', d);
+    }
+
+    // --- LAPORAN ---
+    function renderLaporan() {
+      function row(label, arr, total) {
+        const cells = arr.map(v => `<td>${v}</td>`).join('');
+        return `<td>${label}</td>${cells}<td><strong>${total}</strong></td>`;
+      }
+      const lap = POSYANDU.map(p => ({
+        balita:  data.balita.filter(d => d.pos === p).length,
+        stunting: data.balita.filter(d => d.pos === p && d.status === 'Stunting').length,
+        hamil:   data.hamil.filter(d => d.pos === p).length,
+        lansia:  data.lansia.filter(d => d.pos === p).length,
+        imun:    data.imun.filter(d => d.pos === p).length,
+        psn:     data.psn.filter(d => d.pos === p).length,
+        jamban:  data.jamban.filter(d => d.pos === p && d.odf && d.odf.includes('Sehat')).length,
+      }));
+      const sum = k => lap.reduce((a,b) => a + b[k], 0);
+      const vals = k => lap.map(p => p[k]);
+      const r = id => document.getElementById(id);
+      if (r('lap-row-balita'))  r('lap-row-balita').innerHTML  = row('Balita ditimbang', vals('balita'),  sum('balita'));
+      if (r('lap-row-stunting'))r('lap-row-stunting').innerHTML= row('Stunting',         vals('stunting'),sum('stunting'));
+      if (r('lap-row-hamil'))   r('lap-row-hamil').innerHTML   = row('Ibu hamil ANC',    vals('hamil'),   sum('hamil'));
+      if (r('lap-row-lansia'))  r('lap-row-lansia').innerHTML  = row('Lansia hadir',     vals('lansia'),  sum('lansia'));
+      if (r('lap-row-imun'))    r('lap-row-imun').innerHTML    = row('Imunisasi',        vals('imun'),    sum('imun'));
+      if (r('lap-row-psn'))     r('lap-row-psn').innerHTML     = row('PSN dikunjungi',   vals('psn'),     sum('psn'));
+      if (r('lap-row-jamban'))  r('lap-row-jamban').innerHTML  = row('KK jamban sehat',  vals('jamban'),  sum('jamban'));
     }
 
     // --- CHARTS ---
