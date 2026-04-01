@@ -1716,15 +1716,36 @@
       balita: [], hamil: [], lansia: [], odgj: [], imun: [], psn: [], jamban: []
     };
 
+    // JSONP — bypass CORS untuk GitHub Pages ke Google Apps Script
+    function jsonp(url) {
+      return new Promise((resolve, reject) => {
+        const cb = 'cb_' + Date.now();
+        const script = document.createElement('script');
+        const timeout = setTimeout(() => {
+          delete window[cb]; script.remove();
+          reject(new Error('Timeout'));
+        }, 15000);
+        window[cb] = (json) => {
+          clearTimeout(timeout); delete window[cb]; script.remove();
+          resolve(json);
+        };
+        script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb;
+        script.onerror = () => {
+          clearTimeout(timeout); delete window[cb]; script.remove();
+          reject(new Error('Script load error'));
+        };
+        document.head.appendChild(script);
+      });
+    }
+
     async function fetchAwal() {
       try {
-        const res = await fetch(API_URL);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const json = await res.json();
+        const json = await jsonp(API_URL);
         data = json;
         document.getElementById('global-loader').style.display = 'none';
         renderDashboard();
       } catch (err) {
+        console.error('fetchAwal error:', err);
         alert('Gagal mengambil data dari Google Sheets: ' + err.message);
         document.getElementById('global-loader').style.display = 'none';
         renderDashboard();
@@ -1733,20 +1754,15 @@
 
     async function postData(type, payload) {
       try {
-        document.getElementById('global-loader').querySelector('div:nth-child(2)').textContent = 'Menyimpan data...';
+        const loaderText = document.getElementById('global-loader').querySelector('div:nth-child(2)');
+        loaderText.textContent = 'Menyimpan data...';
         document.getElementById('global-loader').style.display = 'flex';
-
-        await fetch(API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ type, payload }),
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-        });
-
+        await jsonp(API_URL + '?type=' + encodeURIComponent(type) + '&payload=' + encodeURIComponent(JSON.stringify(payload)));
         document.getElementById('global-loader').style.display = 'none';
-        document.getElementById('global-loader').querySelector('div:nth-child(2)').textContent = 'Memuat data dari server...';
-      } catch (err) {
+        loaderText.textContent = 'Memuat data dari server...';
+      } catch(err) {
         document.getElementById('global-loader').style.display = 'none';
-        alert('Gagal menyimpan ke server: ' + err.message);
+        console.warn('postData error:', err);
       }
     }
 
