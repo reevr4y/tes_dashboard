@@ -917,7 +917,7 @@
         </div>
 
         <!-- Per Posyandu Summary -->
-        <div class="card">
+        <div class="card" style="margin-bottom:20px;">
           <div class="card-body">
             <div class="section-hd">
               <span class="section-title">Ringkasan Per Posyandu</span>
@@ -942,6 +942,17 @@
             </div>
           </div>
         </div>
+
+        <!-- Peta Sebaran PSN -->
+        <div class="card">
+          <div class="card-body">
+            <div class="section-hd">
+              <span class="section-title">🦟 Peta Sebaran PSN</span>
+              <span class="badge badge-green" id="dash-psn-badge">0 titik</span>
+            </div>
+            <div id="dash-map" style="height:320px;border-radius:10px;overflow:hidden;"></div>
+          </div>
+        </div>
       </div>
 
       <!-- ==================== BALITA / STUNTING ==================== -->
@@ -954,16 +965,16 @@
         <div class="grid3" style="margin-bottom:20px;">
           <div class="stat-card">
             <div class="stat-label">Total Balita</div>
-            <div class="stat-num">128</div>
+            <div class="stat-num" id="balita-total">—</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Stunting</div>
-            <div class="stat-num" style="color:var(--red);">24</div>
-            <div class="stat-sub">18.75% dari total</div>
+            <div class="stat-num" style="color:var(--red);" id="balita-stunting">—</div>
+            <div class="stat-sub" id="balita-stunting-pct">0% dari total</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Gizi Buruk</div>
-            <div class="stat-num" style="color:var(--amber);">5</div>
+            <div class="stat-num" style="color:var(--amber);" id="balita-gizi-buruk">—</div>
           </div>
         </div>
 
@@ -1851,12 +1862,12 @@
 
       // Update kartu halaman balita
       if (document.getElementById('balita-total')) {
-        document.getElementById('balita-total').textContent = totalBalita;
-        document.getElementById('balita-stunting').textContent = totalStunting;
+        document.getElementById('balita-total').textContent = totalBalita || '—';
+        document.getElementById('balita-stunting').textContent = totalStunting || '—';
         const pctStunt = totalBalita > 0 ? (totalStunting/totalBalita*100).toFixed(1) : 0;
-        document.getElementById('balita-stunting-pct').textContent = pctStunt + '% dari total';
+        document.getElementById('balita-stunting-pct').textContent = totalBalita > 0 ? pctStunt + '% dari total' : '0% dari total';
         const giziBuruk = data.balita.filter(d => d.status === 'Gizi Buruk').length;
-        document.getElementById('balita-gizi-buruk').textContent = giziBuruk;
+        document.getElementById('balita-gizi-buruk').textContent = giziBuruk || '—';
       }
 
       // Update kartu halaman jamban
@@ -1901,6 +1912,36 @@
       });
       drawChart('chartStunting', 'bar', POSYANDU, [stuntingPerPos], ['Stunting'], ['#c0392b']);
       drawChart('chartImun', 'bar', POSYANDU, [imunPerPos], ['Cakupan %'], ['#2d7a4f']);
+
+      // Init peta PSN di dashboard
+      initDashMap();
+    }
+
+    let dashMap = null, dashMarkers = [];
+    function initDashMap() {
+      const el = document.getElementById('dash-map');
+      if (!el) return;
+      if (!dashMap) {
+        dashMap = L.map('dash-map').setView([-6.95, 110.42], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(dashMap);
+      }
+      // Hapus marker lama
+      dashMarkers.forEach(m => dashMap.removeLayer(m));
+      dashMarkers = [];
+      // Tambah marker dari data PSN
+      data.psn.forEach(d => {
+        if (!d.lat || !d.lng) return;
+        const warna = d.temuan && (d.temuan.includes('positif') || d.temuan.includes('jentik')) ? '#c0392b' : '#2d7a4f';
+        const icon = L.divIcon({
+          html: `<div style="background:${warna};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>`,
+          iconSize: [14,14], className: ''
+        });
+        const m = L.marker([d.lat, d.lng], { icon }).addTo(dashMap);
+        m.bindPopup(`<strong>${d.pos}</strong><br>${d.alamat || ''}<br><small>${d.temuan || ''}</small>`);
+        dashMarkers.push(m);
+      });
+      document.getElementById('dash-psn-badge').textContent = dashMarkers.length + ' titik';
+      setTimeout(() => dashMap && dashMap.invalidateSize(), 300);
     }
 
     // --- BALITA ---
