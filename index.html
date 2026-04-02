@@ -979,11 +979,16 @@
       <div id="page-balita" class="page">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
           <div class="page-title" style="margin-bottom:0">Data Balita & Stunting</div>
-          <button class="btn btn-secondary btn-sm" onclick="exportPDF('balita')">📄 Export PDF</button>
+          <button class="btn btn-secondary btn-sm" onclick="bukaExportModal('balita')">📄 Export PDF</button>
         </div>
         <p class="page-sub">Pemantauan berat badan, tinggi, dan status gizi balita</p>
 
         <div class="pos-tabs" id="balita-tabs"></div>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;">
+          <span style="font-size:12px;color:var(--text3);font-weight:600;">Filter Status:</span>
+          <div class="pos-tabs" id="balita-status-tabs" style="margin-bottom:0;"></div>
+        </div>
 
         <div class="grid3" style="margin-bottom:20px;">
           <div class="stat-card">
@@ -1019,6 +1024,7 @@
                     <th>TB (cm)</th>
                     <th>LK (cm)</th>
                     <th>Status</th>
+                    <th>Tgl Timbang</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
@@ -1028,10 +1034,26 @@
           </div>
         </div>
 
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-body">
+            <div class="section-hd"><span class="section-title">Stunting per Posyandu (Bulan Ini)</span></div>
+            <div class="chart-box"><canvas id="chartStunting2"></canvas></div>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-body">
-            <div class="section-hd"><span class="section-title">Grafik Stunting per Posyandu</span></div>
-            <div class="chart-box"><canvas id="chartStunting2"></canvas></div>
+            <div class="section-hd">
+              <span class="section-title">📈 Tren Status Gizi 6 Bulan Terakhir</span>
+              <span style="font-size:12px;color:var(--text3);">Berdasarkan tanggal timbang</span>
+            </div>
+            <div class="chart-box" style="height:260px;"><canvas id="chartTrenBalita"></canvas></div>
+            <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;">
+              <span style="font-size:12px;display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:2px;background:#c0392b;display:inline-block"></span>Stunting</span>
+              <span style="font-size:12px;display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:2px;background:#b86a00;display:inline-block"></span>Gizi Kurang</span>
+              <span style="font-size:12px;display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:2px;background:#e65100;display:inline-block"></span>Gizi Buruk</span>
+              <span style="font-size:12px;display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:2px;background:#2d7a4f;display:inline-block"></span>Normal</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1040,11 +1062,16 @@
       <div id="page-ibu_hamil" class="page">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
           <div class="page-title" style="margin-bottom:0">Data Ibu Hamil</div>
-          <button class="btn btn-secondary btn-sm" onclick="exportPDF('hamil')">📄 Export PDF</button>
+          <button class="btn btn-secondary btn-sm" onclick="bukaExportModal('hamil')">📄 Export PDF</button>
         </div>
         <p class="page-sub">Pemantauan kehamilan dan kunjungan ANC</p>
 
         <div class="pos-tabs" id="hamil-tabs"></div>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;">
+          <span style="font-size:12px;color:var(--text3);font-weight:600;">Filter Status:</span>
+          <div class="pos-tabs" id="hamil-status-tabs" style="margin-bottom:0;"></div>
+        </div>
 
         <div class="section-hd" style="margin-bottom:14px;">
           <span></span>
@@ -1074,17 +1101,36 @@
             </div>
           </div>
         </div>
+
+        <div class="card" style="margin-top:16px;">
+          <div class="card-body">
+            <div class="section-hd">
+              <span class="section-title">📈 Tren Ibu Hamil 6 Bulan Terakhir</span>
+              <span style="font-size:12px;color:var(--text3);">Jumlah aktif per bulan</span>
+            </div>
+            <div class="chart-box" style="height:240px;"><canvas id="chartTrenHamil"></canvas></div>
+            <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;">
+              <span style="font-size:12px;display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:2px;background:#1565c0;display:inline-block"></span>Total Hamil</span>
+              <span style="font-size:12px;display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:2px;background:#c0392b;display:inline-block"></span>Risiko Tinggi</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ==================== LANSIA ==================== -->
       <div id="page-lansia" class="page">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
           <div class="page-title" style="margin-bottom:0">Data Lansia</div>
-          <button class="btn btn-secondary btn-sm" onclick="exportPDF('lansia')">📄 Export PDF</button>
+          <button class="btn btn-secondary btn-sm" onclick="bukaExportModal('lansia')">📄 Export PDF</button>
         </div>
         <p class="page-sub">Pemantauan kesehatan warga usia ≥ 60 tahun</p>
 
         <div class="pos-tabs" id="lansia-tabs"></div>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;">
+          <span style="font-size:12px;color:var(--text3);font-weight:600;">Filter TD:</span>
+          <div class="pos-tabs" id="lansia-status-tabs" style="margin-bottom:0;"></div>
+        </div>
 
         <div class="section-hd" style="margin-bottom:14px;">
           <span></span>
@@ -1114,13 +1160,26 @@
             </div>
           </div>
         </div>
+
+        <div class="card" style="margin-top:16px;">
+          <div class="card-body">
+            <div class="section-hd">
+              <span class="section-title">📈 Tren Kunjungan Lansia 6 Bulan Terakhir</span>
+              <span style="font-size:12px;color:var(--text3);">Berdasarkan tanggal kunjungan</span>
+            </div>
+            <div class="chart-box" style="height:240px;"><canvas id="chartTrenLansia"></canvas></div>
+            <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;">
+              <span style="font-size:12px;display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;border-radius:2px;background:#6a1b9a;display:inline-block"></span>Total Kunjungan</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ==================== ODGJ ==================== -->
       <div id="page-odgj" class="page">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
           <div class="page-title" style="margin-bottom:0">Data ODGJ</div>
-          <button class="btn btn-secondary btn-sm" onclick="exportPDF('odgj')">📄 Export PDF</button>
+          <button class="btn btn-secondary btn-sm" onclick="bukaExportModal('odgj')">📄 Export PDF</button>
         </div>
         <p class="page-sub">Orang Dengan Gangguan Jiwa — Pemantauan & Pendampingan</p>
 
@@ -1163,7 +1222,7 @@
       <div id="page-imunisasi" class="page">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
           <div class="page-title" style="margin-bottom:0">Data Imunisasi</div>
-          <button class="btn btn-secondary btn-sm" onclick="exportPDF('imun')">📄 Export PDF</button>
+          <button class="btn btn-secondary btn-sm" onclick="bukaExportModal('imun')">📄 Export PDF</button>
         </div>
         <p class="page-sub">Cakupan imunisasi balita & ibu hamil per posyandu</p>
 
@@ -1209,7 +1268,7 @@
       <div id="page-psn" class="page">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
           <div class="page-title" style="margin-bottom:0">PSN — Pemberantasan Sarang Nyamuk</div>
-          <button class="btn btn-secondary btn-sm" onclick="exportPDF('psn')">📄 Export PDF</button>
+          <button class="btn btn-secondary btn-sm" onclick="bukaExportModal('psn')">📄 Export PDF</button>
         </div>
         <p class="page-sub">Pencatatan lokasi, foto bukti, dan pemantauan di peta</p>
 
@@ -1308,7 +1367,7 @@
       <div id="page-jamban" class="page">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
           <div class="page-title" style="margin-bottom:0">Jamban Sehat</div>
-          <button class="btn btn-secondary btn-sm" onclick="exportPDF('jamban')">📄 Export PDF</button>
+          <button class="btn btn-secondary btn-sm" onclick="bukaExportModal('jamban')">📄 Export PDF</button>
         </div>
         <p class="page-sub">Pendataan kepemilikan dan kondisi jamban per keluarga</p>
 
@@ -2066,23 +2125,212 @@
     }
 
     // --- BALITA ---
-    function renderBalita(filter = 'Semua') {
+    // State filter balita
+    let balitaFilterPos = 'Semua', balitaFilterStatus = 'Semua';
+
+    function getLatestBalita() {
+      // Ambil data terbaru per nama (deduplikasi snapshot bulanan)
+      const map = {};
+      data.balita.forEach(d => {
+        const key = (d.nama||'').toLowerCase().trim();
+        if (!key) return;
+        if (!map[key] || new Date(d.tgl) >= new Date(map[key].tgl)) map[key] = d;
+      });
+      return Object.values(map);
+    }
+
+    function renderBalita(filterPos = balitaFilterPos) {
+      balitaFilterPos = filterPos;
       renderTabs('balita-tabs', 'renderBalita');
-      const rows = filter === 'Semua' ? data.balita : data.balita.filter(d => d.pos === filter);
+
+      // Filter status tabs
+      const statusList = ['Semua','Normal','Stunting','Gizi Kurang','Gizi Buruk','Obesitas'];
+      const stContainer = document.getElementById('balita-status-tabs');
+      if (stContainer) {
+        stContainer.innerHTML = statusList.map(s =>
+          `<div class="pos-tab${s === balitaFilterStatus ? ' active' : ''}"
+            onclick="balitaFilterStatus='${s}';renderBalita(balitaFilterPos)"
+            style="font-size:11px;padding:4px 10px;">${s}</div>`
+        ).join('');
+      }
+
+      // Data terbaru per anak → filter posyandu & status
+      let rows = getLatestBalita();
+      if (balitaFilterPos !== 'Semua') rows = rows.filter(d => d.pos === balitaFilterPos);
+      if (balitaFilterStatus !== 'Semua') rows = rows.filter(d => d.status === balitaFilterStatus);
+
+      // Update stat cards berdasarkan data terbaru (semua posyandu)
+      const latest = getLatestBalita();
+      const totB  = latest.length;
+      const totSt = latest.filter(d => d.status === 'Stunting').length;
+      const totGB = latest.filter(d => d.status === 'Gizi Buruk').length;
+      if (document.getElementById('balita-total')) {
+        document.getElementById('balita-total').textContent = totB || '—';
+        document.getElementById('balita-stunting').textContent = totSt || '—';
+        document.getElementById('balita-stunting-pct').textContent = totB > 0 ? (totSt/totB*100).toFixed(1)+'% dari total' : '0% dari total';
+        document.getElementById('balita-gizi-buruk').textContent = totGB || '—';
+      }
+
       const tbody = document.getElementById('balita-tbody');
       tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
-    <td><strong>${d.nama}</strong></td>
-    <td>${d.usia} bln</td>
-    <td>${d.alamat}</td>
-    <td>${d.pos}</td>
-    <td>${d.bb}</td>
-    <td>${d.tb}</td>
-    <td>${d.lk}</td>
-    <td><span class="badge ${d.status === 'Normal' ? 'badge-green' : d.status === 'Stunting' ? 'badge-red' : 'badge-amber'}">${d.status}</span></td>
-    <td><button class="btn btn-danger btn-sm" onclick="delRow('balita',${i})">Hapus</button></td>
-  </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--text3);">Belum ada data</td></tr>';
-      const st2 = POSYANDU.map(p => data.balita.filter(d => d.pos === p && d.status === 'Stunting').length);
+        <td><strong>${d.nama||''}</strong></td>
+        <td>${d.usia||''} bln</td>
+        <td>${d.alamat||''}</td>
+        <td>${d.pos||''}</td>
+        <td>${d.bb||''}</td>
+        <td>${d.tb||''}</td>
+        <td>${d.lk||''}</td>
+        <td><span class="badge ${d.status==='Normal'?'badge-green':d.status==='Stunting'?'badge-red':'badge-amber'}">${d.status||''}</span></td>
+        <td style="font-size:11px;color:var(--text3);">${d.tgl||''}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="delRow('balita',${data.balita.indexOf(d)})">Hapus</button></td>
+      </tr>`).join('') : `<tr><td colspan="10" style="text-align:center;color:var(--text3);">Belum ada data${balitaFilterStatus!=='Semua'?' untuk status '+balitaFilterStatus:''}</td></tr>`;
+
+      // Grafik pakai data terbaru per anak
+      const latestAll = getLatestBalita();
+      const st2 = POSYANDU.map(p => latestAll.filter(d => d.pos===p && d.status==='Stunting').length);
       drawChart('chartStunting2', 'bar', POSYANDU, [st2], ['Stunting'], ['#c0392b']);
+      drawTrenBalita();
+    }
+
+    function getBulan6() {
+      const NAMA = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+      const now = new Date();
+      const hasil = [];
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        hasil.push({ label: NAMA[d.getMonth()] + ' ' + d.getFullYear(), month: d.getMonth(), year: d.getFullYear() });
+      }
+      return hasil;
+    }
+
+    function getTanggalField(d, fields) {
+      for (const f of fields) { if (d[f]) return d[f]; }
+      return null;
+    }
+
+    function countPerBulan(dataArr, bulanList, tglFields) {
+      return bulanList.map(b => dataArr.filter(d => {
+        const tglStr = getTanggalField(d, tglFields);
+        if (!tglStr) return false;
+        const tgl = new Date(tglStr);
+        return !isNaN(tgl) && tgl.getMonth() === b.month && tgl.getFullYear() === b.year;
+      }).length);
+    }
+
+    function getSnapshotBulan(bulan) {
+      // Per bulan, ambil 1 data terbaru per anak (snapshot bulanan)
+      return bulan.map(b => {
+        const map = {};
+        data.balita.forEach(d => {
+          if (!d.tgl) return;
+          const tgl = new Date(d.tgl);
+          if (isNaN(tgl) || tgl.getMonth() !== b.month || tgl.getFullYear() !== b.year) return;
+          const key = (d.nama||'').toLowerCase().trim();
+          if (!key) return;
+          if (!map[key] || new Date(d.tgl) >= new Date(map[key].tgl)) map[key] = d;
+        });
+        return Object.values(map);
+      });
+    }
+
+    function drawTrenBalita() {
+      const canvas = document.getElementById('chartTrenBalita');
+      if (!canvas) return;
+      if (chartInstances['chartTrenBalita']) chartInstances['chartTrenBalita'].destroy();
+      const bulan = getBulan6();
+      const labels = bulan.map(b => b.label);
+      const snapshots = getSnapshotBulan(bulan);
+      const stunting   = snapshots.map(s => s.filter(d => d.status === 'Stunting').length);
+      const giziKurang = snapshots.map(s => s.filter(d => d.status === 'Gizi Kurang').length);
+      const giziBuruk  = snapshots.map(s => s.filter(d => d.status === 'Gizi Buruk').length);
+      const normal     = snapshots.map(s => s.filter(d => d.status === 'Normal').length);
+      chartInstances['chartTrenBalita'] = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Stunting',    data: stunting,   borderColor: '#c0392b', backgroundColor: '#c0392b22', tension: 0.4, fill: true, pointRadius: 5, pointHoverRadius: 7 },
+            { label: 'Gizi Kurang', data: giziKurang, borderColor: '#b86a00', backgroundColor: '#b86a0022', tension: 0.4, fill: true, pointRadius: 5, pointHoverRadius: 7 },
+            { label: 'Gizi Buruk',  data: giziBuruk,  borderColor: '#e65100', backgroundColor: '#e6510022', tension: 0.4, fill: true, pointRadius: 5, pointHoverRadius: 7 },
+            { label: 'Normal',      data: normal,     borderColor: '#2d7a4f', backgroundColor: '#2d7a4f22', tension: 0.4, fill: true, pointRadius: 5, pointHoverRadius: 7 },
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                afterBody: (items) => {
+                  const total = items.reduce((s, i) => s + i.raw, 0);
+                  return total ? 'Total: ' + total + ' balita' : '';
+                }
+              }
+            }
+          },
+          scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#eee' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function drawTrenHamil() {
+      const canvas = document.getElementById('chartTrenHamil');
+      if (!canvas) return;
+      if (chartInstances['chartTrenHamil']) chartInstances['chartTrenHamil'].destroy();
+      const bulan = getBulan6();
+      const labels = bulan.map(b => b.label);
+      const total   = countPerBulan(data.hamil, bulan, ['tgl','hpht']);
+      const risikoT = countPerBulan(data.hamil.filter(d => d.status === 'Risiko Tinggi'), bulan, ['tgl','hpht']);
+      chartInstances['chartTrenHamil'] = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Total Hamil',   data: total,   borderColor: '#1565c0', backgroundColor: '#1565c022', tension: 0.4, fill: true, pointRadius: 5, pointHoverRadius: 7 },
+            { label: 'Risiko Tinggi', data: risikoT, borderColor: '#c0392b', backgroundColor: '#c0392b22', tension: 0.4, fill: true, pointRadius: 5, pointHoverRadius: 7 },
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#eee' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function drawTrenLansia() {
+      const canvas = document.getElementById('chartTrenLansia');
+      if (!canvas) return;
+      if (chartInstances['chartTrenLansia']) chartInstances['chartTrenLansia'].destroy();
+      const bulan = getBulan6();
+      const labels = bulan.map(b => b.label);
+      const kunjungan = countPerBulan(data.lansia, bulan, ['tgl']);
+      chartInstances['chartTrenLansia'] = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Kunjungan Lansia', data: kunjungan, borderColor: '#6a1b9a', backgroundColor: '#6a1b9a22', tension: 0.4, fill: true, pointRadius: 5, pointHoverRadius: 7 },
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#eee' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
     }
 
     async function saveBalita() {
@@ -2099,9 +2347,24 @@
     }
 
     // --- IBU HAMIL ---
-    function renderHamil(filter = 'Semua') {
+    let hamilFilterPos = 'Semua', hamilFilterStatus = 'Semua';
+
+    function renderHamil(filterPos = hamilFilterPos) {
+      hamilFilterPos = filterPos;
       renderTabs('hamil-tabs', 'renderHamil');
-      const rows = filter === 'Semua' ? data.hamil : data.hamil.filter(d => d.pos === filter);
+
+      const statusListH = ['Semua','Normal','Risiko Tinggi','Butuh Rujukan'];
+      const stcH = document.getElementById('hamil-status-tabs');
+      if (stcH) {
+        stcH.innerHTML = statusListH.map(s =>
+          `<div class="pos-tab${s===hamilFilterStatus?' active':''}"
+            onclick="hamilFilterStatus='${s}';renderHamil(hamilFilterPos)"
+            style="font-size:11px;padding:4px 10px;">${s}</div>`
+        ).join('');
+      }
+
+      let rows = hamilFilterPos === 'Semua' ? data.hamil : data.hamil.filter(d => d.pos === hamilFilterPos);
+      if (hamilFilterStatus !== 'Semua') rows = rows.filter(d => d.status === hamilFilterStatus);
       const tbody = document.getElementById('hamil-tbody');
       tbody.innerHTML = rows.length ? rows.map((d, i) => {
         const hpl = new Date(d.hpht);
@@ -2119,6 +2382,7 @@
       <td><button class="btn btn-danger btn-sm" onclick="delRow('hamil',${i})">Hapus</button></td>
     </tr>`;
       }).join('') : '<tr><td colspan="10" style="text-align:center;color:var(--text3);">Belum ada data</td></tr>';
+      drawTrenHamil();
     }
 
     async function saveHamil() {
@@ -2135,9 +2399,39 @@
     }
 
     // --- LANSIA ---
-    function renderLansia(filter = 'Semua') {
+    let lansiaFilterPos = 'Semua', lansiaFilterTD = 'Semua';
+
+    function parseTD(tdStr) {
+      if (!tdStr) return null;
+      const parts = String(tdStr).split('/');
+      return parts.length >= 1 ? parseInt(parts[0]) : null;
+    }
+
+    function renderLansia(filterPos = lansiaFilterPos) {
+      lansiaFilterPos = filterPos;
       renderTabs('lansia-tabs', 'renderLansia');
-      const rows = filter === 'Semua' ? data.lansia : data.lansia.filter(d => d.pos === filter);
+
+      const tdList = ['Semua','Normal (< 120)','Prehipertensi (120–139)','Hipertensi (≥ 140)'];
+      const stcL = document.getElementById('lansia-status-tabs');
+      if (stcL) {
+        stcL.innerHTML = tdList.map(s =>
+          `<div class="pos-tab${s===lansiaFilterTD?' active':''}"
+            onclick="lansiaFilterTD='${s}';renderLansia(lansiaFilterPos)"
+            style="font-size:11px;padding:4px 10px;">${s}</div>`
+        ).join('');
+      }
+
+      let rows = lansiaFilterPos === 'Semua' ? data.lansia : data.lansia.filter(d => d.pos === lansiaFilterPos);
+      if (lansiaFilterTD !== 'Semua') {
+        rows = rows.filter(d => {
+          const sistol = parseTD(d.td);
+          if (sistol === null) return false;
+          if (lansiaFilterTD.includes('Normal'))        return sistol < 120;
+          if (lansiaFilterTD.includes('Prehipertensi')) return sistol >= 120 && sistol < 140;
+          if (lansiaFilterTD.includes('Hipertensi'))    return sistol >= 140;
+          return true;
+        });
+      }
       const tbody = document.getElementById('lansia-tbody');
       tbody.innerHTML = rows.length ? rows.map((d, i) => `<tr>
     <td><strong>${d.nama}</strong></td>
@@ -2505,62 +2799,186 @@
     });
 
     // --- EXPORT PDF ---
-    function exportPDF(type) {
+    // --- EXPORT PDF DENGAN FILTER ---
+    const EXPORT_STATUS = {
+      balita:  ['Semua Status','Normal','Stunting','Gizi Kurang','Gizi Buruk','Obesitas'],
+      hamil:   ['Semua Status','Normal','Risiko Tinggi','Butuh Rujukan'],
+      lansia:  ['Semua Status'],
+      odgj:    ['Semua Status','Rutin minum obat','Tidak rutin','Putus obat','Belum berobat'],
+      imun:    ['Semua Status'],
+      psn:     ['Semua Hasil','Tidak ada jentik','Ditemukan jentik — sudah dibersihkan','Genangan air ditemukan','Wadah positif jentik'],
+      jamban:  ['Semua Status','✅ Sehat','⚠️ Perlu perbaikan','❌ BAB sembarangan'],
+    };
+
+    const EXPORT_TITLES = {
+      balita: 'Data Balita & Stunting', hamil: 'Data Ibu Hamil',
+      lansia: 'Data Lansia', odgj: 'Data ODGJ',
+      imun: 'Data Imunisasi', psn: 'Data PSN', jamban: 'Data Jamban Sehat'
+    };
+
+    function bukaExportModal(type) {
+      document.getElementById('export-type').value = type;
+      document.getElementById('export-modal-title').textContent = 'Export PDF — ' + EXPORT_TITLES[type];
+
+      // Isi dropdown status
+      const statusSel = document.getElementById('export-status');
+      const statuses = EXPORT_STATUS[type] || ['Semua Status'];
+      statusSel.innerHTML = statuses.map(s => `<option value="${s}">${s}</option>`).join('');
+
+      // Label status
+      const labelMap = { psn: 'Filter Hasil Temuan', odgj: 'Filter Status Obat', jamban: 'Filter Status ODF', lansia: 'Filter TD', imun: 'Filter Status' };
+      document.getElementById('export-status-label').textContent = labelMap[type] || 'Filter Status';
+
+      // Wrap status — sembunyikan kalau hanya 1 pilihan
+      document.getElementById('export-status-wrap').style.display = statuses.length <= 1 ? 'none' : 'block';
+
+      // Isi dropdown bulan dari data
+      const dataArr = data[type === 'balita' ? 'balita' : type === 'hamil' ? 'hamil' : type === 'lansia' ? 'lansia' : type === 'odgj' ? 'odgj' : type === 'imun' ? 'imun' : type === 'psn' ? 'psn' : 'jamban'];
+      const bulanSet = new Set();
+      const NAMA_BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+      dataArr.forEach(d => {
+        const tglStr = d.tgl || d.hpht || '';
+        if (!tglStr) return;
+        const t = new Date(tglStr);
+        if (!isNaN(t)) bulanSet.add(t.getFullYear() + '-' + String(t.getMonth()).padStart(2,'0') + '|' + NAMA_BULAN[t.getMonth()] + ' ' + t.getFullYear());
+      });
+      const bulanSel = document.getElementById('export-bulan');
+      const bulanArr = [...bulanSet].sort().reverse();
+      bulanSel.innerHTML = '<option value="">Semua Bulan</option>' + bulanArr.map(b => {
+        const [val, label] = b.split('|');
+        return `<option value="${val}">${label}</option>`;
+      }).join('');
+      document.getElementById('export-bulan-wrap').style.display = bulanArr.length > 0 ? 'block' : 'none';
+
+      openModal('modal-export');
+      updateExportPreview();
+
+      // Update preview saat filter berubah
+      document.getElementById('export-pos').onchange = updateExportPreview;
+      document.getElementById('export-status').onchange = updateExportPreview;
+      document.getElementById('export-bulan').onchange = updateExportPreview;
+    }
+
+    function getFilteredExportData(type, pos, status, bulan) {
+      let arr = data[type] || [];
+
+      // Dedup balita (terbaru per anak)
+      if (type === 'balita') {
+        const map = {};
+        arr.forEach(d => {
+          const key = (d.nama||'').toLowerCase().trim();
+          if (!key) return;
+          if (!map[key] || new Date(d.tgl) >= new Date(map[key].tgl)) map[key] = d;
+        });
+        arr = Object.values(map);
+      }
+
+      if (pos && pos !== 'Semua') arr = arr.filter(d => d.pos === pos);
+
+      if (status && !status.startsWith('Semua')) {
+        if (type === 'balita') arr = arr.filter(d => d.status === status);
+        else if (type === 'hamil') arr = arr.filter(d => d.status === status);
+        else if (type === 'odgj') arr = arr.filter(d => d.obat === status);
+        else if (type === 'psn') arr = arr.filter(d => d.temuan === status);
+        else if (type === 'jamban') arr = arr.filter(d => d.odf === status);
+      }
+
+      if (bulan) {
+        const [filterTahun, filterBulan] = bulan.split('-').map(Number);
+        arr = arr.filter(d => {
+          const tglStr = d.tgl || d.hpht || '';
+          if (!tglStr) return false;
+          const t = new Date(tglStr);
+          return !isNaN(t) && t.getFullYear() === filterTahun && t.getMonth() === filterBulan;
+        });
+      }
+
+      return arr;
+    }
+
+    function updateExportPreview() {
+      const type   = document.getElementById('export-type').value;
+      const pos    = document.getElementById('export-pos').value;
+      const status = document.getElementById('export-status').value;
+      const bulan  = document.getElementById('export-bulan').value;
+      const arr    = getFilteredExportData(type, pos, status, bulan);
+      const NAMA_BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+      let desc = arr.length + ' data';
+      if (pos !== 'Semua') desc += ' · Posyandu ' + pos;
+      if (status && !status.startsWith('Semua')) desc += ' · ' + status;
+      if (bulan) { const [y,m] = bulan.split('-').map(Number); desc += ' · ' + NAMA_BULAN[m] + ' ' + y; }
+      document.getElementById('export-preview-text').textContent = 'Akan mengekspor ' + desc;
+    }
+
+    function jalankanExport() {
+      const type   = document.getElementById('export-type').value;
+      const pos    = document.getElementById('export-pos').value;
+      const status = document.getElementById('export-status').value;
+      const bulan  = document.getElementById('export-bulan').value;
+      const arr    = getFilteredExportData(type, pos, status, bulan);
+
+      if (!arr.length) return alert('Tidak ada data yang sesuai filter.');
+
+      exportPDF(type, arr, pos, status, bulan);
+      closeModal('modal-export');
+    }
+
+    function exportPDF(type, filteredArr, pos, status, bulan) {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
       const tgl = new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
       const W = doc.internal.pageSize.getWidth();
 
+      const NAMA_BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
       const configs = {
         balita: {
           title: 'Data Balita & Stunting',
-          subtitle: 'Posyandu Desa Sambong',
-          head: [['No','Nama','Usia','Alamat','Posyandu','BB (kg)','TB (cm)','LK (cm)','Status']],
-          body: () => data.balita.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' bln', d.alamat||'', d.pos||'', d.bb||'', d.tb||'', d.lk||'', d.status||''])
+          head: [['No','Nama','Usia','Alamat','Posyandu','BB (kg)','TB (cm)','LK (cm)','Status','Tgl Timbang']],
+          body: (arr) => arr.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' bln', d.alamat||'', d.pos||'', d.bb||'', d.tb||'', d.lk||'', d.status||'', d.tgl||''])
         },
         hamil: {
           title: 'Data Ibu Hamil',
-          subtitle: 'Posyandu Desa Sambong',
           head: [['No','Nama','Usia','Alamat','Posyandu','Usia Kehamilan','ANC Ke-','Status','TD']],
-          body: () => data.hamil.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' thn', d.alamat||'', d.pos||'', (d.uk||'')+' minggu', 'ANC ke-'+(d.anc||''), d.status||'', d.td||''])
+          body: (arr) => arr.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' thn', d.alamat||'', d.pos||'', (d.uk||'')+' minggu', 'ANC ke-'+(d.anc||''), d.status||'', d.td||''])
         },
         lansia: {
           title: 'Data Lansia',
-          subtitle: 'Posyandu Desa Sambong',
           head: [['No','Nama','Usia','Alamat','Posyandu','TD (mmHg)','BB (kg)','TB (cm)','Keluhan','Tgl Kunjungan']],
-          body: () => data.lansia.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' thn', d.alamat||'', d.pos||'', d.td||'', d.bb||'', d.tb||'', d.riwayat||'', d.tgl||''])
+          body: (arr) => arr.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' thn', d.alamat||'', d.pos||'', d.td||'', d.bb||'', d.tb||'', d.riwayat||'', d.tgl||''])
         },
         odgj: {
-          title: 'Data ODGJ',
-          subtitle: 'Posyandu Desa Sambong — RAHASIA',
+          title: 'Data ODGJ — RAHASIA',
           head: [['No','Nama','Usia','Alamat','Posyandu','Diagnosa','Status Obat','Pendamping','Tgl Pantau']],
-          body: () => data.odgj.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' thn', d.alamat||'', d.pos||'', d.diag||'', d.obat||'', d.wali||'', d.tgl||''])
+          body: (arr) => arr.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' thn', d.alamat||'', d.pos||'', d.diag||'', d.obat||'', d.wali||'', d.tgl||''])
         },
         imun: {
           title: 'Data Imunisasi',
-          subtitle: 'Posyandu Desa Sambong',
           head: [['No','Nama Anak','Usia','Posyandu','BCG','DPT','Polio','Campak','Hep B','Tanggal']],
-          body: () => data.imun.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' bln', d.pos||'', d.bcg||'', d.dpt||'', d.polio||'', d.campak||'', d.hep||'', d.tgl||''])
+          body: (arr) => arr.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' bln', d.pos||'', d.bcg||'', d.dpt||'', d.polio||'', d.campak||'', d.hep||'', d.tgl||''])
         },
         psn: {
           title: 'Data PSN — Pemberantasan Sarang Nyamuk',
-          subtitle: 'Posyandu Desa Sambong',
           head: [['No','Posyandu','Alamat','Tanggal','Petugas','Hasil Temuan','Koordinat']],
-          body: () => data.psn.map((d,i) => [i+1, d.pos||'', d.alamat||'', d.tgl||'', d.petugas||'', d.temuan||'', (d.lat&&d.lng) ? d.lat+', '+d.lng : '-'])
+          body: (arr) => arr.map((d,i) => [i+1, d.pos||'', d.alamat||'', d.tgl||'', d.petugas||'', d.temuan||'', (d.lat&&d.lng)?d.lat+', '+d.lng:'-'])
         },
         jamban: {
           title: 'Data Jamban Sehat',
-          subtitle: 'Posyandu Desa Sambong',
           head: [['No','Nama KK','Alamat','Posyandu','Jenis Jamban','Kondisi','Air Bersih','Status ODF']],
-          body: () => data.jamban.map((d,i) => [i+1, d.nama||'', d.alamat||'', d.pos||'', d.jenis||'', d.kondisi||'', d.air||'', d.odf||''])
+          body: (arr) => arr.map((d,i) => [i+1, d.nama||'', d.alamat||'', d.pos||'', d.jenis||'', d.kondisi||'', d.air||'', d.odf||''])
         }
       };
 
       const cfg = configs[type];
       if (!cfg) return alert('Kategori tidak dikenali');
+      const rows = cfg.body(filteredArr);
+      if (!rows.length) return alert('Tidak ada data untuk diekspor.');
 
-      const rows = cfg.body();
-      if (!rows.length) return alert('Belum ada data untuk diekspor');
+      // Susun subtitle dari filter yang aktif
+      const filterParts = ['Desa Sambong'];
+      if (pos && pos !== 'Semua') filterParts.push('Posyandu ' + pos);
+      if (status && !status.startsWith('Semua')) filterParts.push(status);
+      if (bulan) { const [y,m] = bulan.split('-').map(Number); filterParts.push(NAMA_BULAN[m] + ' ' + y); }
+      const subtitle = filterParts.join(' · ');
 
       // Header dokumen
       doc.setFillColor(45, 122, 79);
@@ -2569,7 +2987,7 @@
       doc.setFontSize(14); doc.setFont('helvetica','bold');
       doc.text(cfg.title, 14, 10);
       doc.setFontSize(9); doc.setFont('helvetica','normal');
-      doc.text(cfg.subtitle + '   |   Dicetak: ' + tgl + '   |   Total: ' + rows.length + ' data', 14, 17);
+      doc.text(subtitle + '   |   Dicetak: ' + tgl + '   |   Total: ' + rows.length + ' data', 14, 17);
 
       // Tabel
       doc.autoTable({
@@ -2598,6 +3016,58 @@
     fetchAwal();
     setTimeout(drawTren, 500);
   </script>
+
+  <!-- ==================== MODAL EXPORT PDF ==================== -->
+  <div class="modal-overlay" id="modal-export">
+    <div class="modal" style="max-width:480px;">
+      <div class="modal-hd">
+        <h3 id="export-modal-title">Export PDF</h3>
+        <button class="close-btn" onclick="closeModal('modal-export')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="export-type">
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Filter Posyandu</label>
+          <select id="export-pos">
+            <option value="Semua">Semua Posyandu</option>
+            <option>Bougenville</option>
+            <option>Kantil</option>
+            <option>Teratai</option>
+            <option>Anggrek</option>
+            <option>Kenanga</option>
+            <option>Dahlia</option>
+            <option>Melati</option>
+            <option>Mawar</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="export-status-wrap" style="margin-bottom:14px;">
+          <label id="export-status-label">Filter Status</label>
+          <select id="export-status">
+            <option value="Semua">Semua Status</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="export-bulan-wrap" style="margin-bottom:14px;display:none;">
+          <label>Filter Bulan (opsional)</label>
+          <select id="export-bulan">
+            <option value="">Semua Bulan</option>
+          </select>
+        </div>
+
+        <div style="background:var(--green-light);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--green);">
+          📄 <span id="export-preview-text">Memuat preview...</span>
+        </div>
+
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-primary" onclick="jalankanExport()">⬇️ Download PDF</button>
+          <button class="btn btn-secondary" onclick="closeModal('modal-export')">Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>
