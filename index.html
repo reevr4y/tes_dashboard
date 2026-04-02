@@ -1256,7 +1256,11 @@
                     📡 Ambil Lokasi GPS Otomatis
                   </button>
                   <p id="psn-coords" style="font-size:12px;color:var(--text2);margin-top:4px;">Tekan tombol untuk ambil lokasi dari HP</p>
-                  <div id="psn-map" style="margin-top:8px;"></div>
+                  <div style="display:flex;gap:6px;margin-bottom:6px;">
+                <button type="button" onclick="setMapType('hybrid')" id="btn-map-hybrid" class="btn btn-primary btn-sm">🛰 Satelit</button>
+                <button type="button" onclick="setMapType('road')" id="btn-map-road" class="btn btn-secondary btn-sm">🗺 Jalan</button>
+              </div>
+              <div id="psn-map" style="margin-top:4px;"></div>
                 </div>
                 <button class="btn btn-primary" onclick="savePSN()">💾 Simpan Data PSN</button>
               </div>
@@ -1954,9 +1958,7 @@
 
       if (!dashMap) {
         dashMap = L.map('dash-map', { zoomControl: true }).setView(SAMBONG, 14);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap', maxZoom: 19
-        }).addTo(dashMap);
+        L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { attribution: '© <a href="https://maps.google.com">Google Maps</a>', maxZoom: 20 }).addTo(dashMap);
       }
 
       // Hapus marker lama
@@ -2206,7 +2208,7 @@
     function initMaps() {
       if (!psnMap) {
         psnMap = L.map('psn-map').setView([-6.95, 110.42], 14);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(psnMap);
+        L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { attribution: '© <a href="https://maps.google.com">Google Maps</a>', maxZoom: 20 }).addTo(psnMap);
         // Tetap bisa klik peta manual sebagai fallback
         psnMap.on('click', function (e) {
           setMarkerPSN(e.latlng.lat.toFixed(6), e.latlng.lng.toFixed(6));
@@ -2214,9 +2216,24 @@
       }
       if (!viewMap) {
         viewMap = L.map('map-view').setView([-6.95, 110.42], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(viewMap);
+        L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { attribution: '© <a href="https://maps.google.com">Google Maps</a>', maxZoom: 20 }).addTo(viewMap);
       }
       setTimeout(() => { psnMap.invalidateSize(); viewMap.invalidateSize(); }, 300);
+    }
+
+    let currentTileLayer = null;
+    function setMapType(type) {
+      const url = type === 'hybrid'
+        ? 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}'
+        : 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}';
+      [psnMap, viewMap, dashMap].forEach(map => {
+        if (!map) return;
+        if (currentTileLayer) map.eachLayer(l => { if (l instanceof L.TileLayer) map.removeLayer(l); });
+        L.tileLayer(url, { attribution: '© Google Maps', maxZoom: 20 }).addTo(map);
+      });
+      currentTileLayer = url;
+      document.getElementById('btn-map-hybrid').className = 'btn btn-sm ' + (type==='hybrid' ? 'btn-primary' : 'btn-secondary');
+      document.getElementById('btn-map-road').className   = 'btn btn-sm ' + (type==='road'   ? 'btn-primary' : 'btn-secondary');
     }
 
     function setMarkerPSN(lat, lng) {
