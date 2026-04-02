@@ -1921,27 +1921,58 @@
     function initDashMap() {
       const el = document.getElementById('dash-map');
       if (!el) return;
+
+      // Koordinat default Desa Sambong, Batang, Jawa Tengah
+      const SAMBONG = [-6.9872, 109.9301];
+
       if (!dashMap) {
-        dashMap = L.map('dash-map').setView([-6.95, 110.42], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(dashMap);
+        dashMap = L.map('dash-map', { zoomControl: true }).setView(SAMBONG, 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap', maxZoom: 19
+        }).addTo(dashMap);
       }
+
       // Hapus marker lama
       dashMarkers.forEach(m => dashMap.removeLayer(m));
       dashMarkers = [];
+
       // Tambah marker dari data PSN
-      data.psn.forEach(d => {
-        if (!d.lat || !d.lng) return;
-        const warna = d.temuan && (d.temuan.includes('positif') || d.temuan.includes('jentik')) ? '#c0392b' : '#2d7a4f';
+      const validPSN = data.psn.filter(d => d.lat && d.lng && !isNaN(parseFloat(d.lat)));
+      validPSN.forEach(d => {
+        const lat = parseFloat(d.lat);
+        const lng = parseFloat(d.lng);
+        if (isNaN(lat) || isNaN(lng)) return;
+        const warna = d.temuan && (d.temuan.toLowerCase().includes('jentik') || d.temuan.toLowerCase().includes('positif'))
+          ? '#c0392b' : '#2d7a4f';
         const icon = L.divIcon({
-          html: `<div style="background:${warna};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>`,
-          iconSize: [14,14], className: ''
+          html: `<div style="background:${warna};width:16px;height:16px;border-radius:50%;border:2.5px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.5)"></div>`,
+          iconSize: [16, 16], iconAnchor: [8, 8], className: ''
         });
-        const m = L.marker([d.lat, d.lng], { icon }).addTo(dashMap);
-        m.bindPopup(`<strong>${d.pos}</strong><br>${d.alamat || ''}<br><small>${d.temuan || ''}</small>`);
+        const m = L.marker([lat, lng], { icon }).addTo(dashMap);
+        m.bindPopup(`<strong>${d.pos || ''}</strong><br>${d.alamat || ''}<br><em style="font-size:11px">${d.temuan || ''}</em><br><small>${d.tgl || ''} — ${d.petugas || ''}</small>`);
         dashMarkers.push(m);
       });
+
       document.getElementById('dash-psn-badge').textContent = dashMarkers.length + ' titik';
-      setTimeout(() => dashMap && dashMap.invalidateSize(), 300);
+
+      // Invalidate dulu, lalu zoom ke marker
+      setTimeout(() => {
+        if (!dashMap) return;
+        dashMap.invalidateSize();
+        if (dashMarkers.length === 1) {
+          // Satu titik — langsung zoom ke sana
+          const latlng = dashMarkers[0].getLatLng();
+          dashMap.setView(latlng, 16);
+          dashMarkers[0].openPopup();
+        } else if (dashMarkers.length > 1) {
+          // Banyak titik — fit semua
+          const group = L.featureGroup(dashMarkers);
+          dashMap.fitBounds(group.getBounds().pad(0.2));
+        } else {
+          // Belum ada data — default ke Desa Sambong
+          dashMap.setView(SAMBONG, 14);
+        }
+      }, 400);
     }
 
     // --- BALITA ---
