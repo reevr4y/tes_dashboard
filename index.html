@@ -9,6 +9,8 @@
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700&display=swap"
     rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
@@ -975,7 +977,10 @@
 
       <!-- ==================== BALITA / STUNTING ==================== -->
       <div id="page-balita" class="page">
-        <div class="page-title">Data Balita & Stunting</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+          <div class="page-title" style="margin-bottom:0">Data Balita & Stunting</div>
+          <button class="btn btn-secondary btn-sm" onclick="exportPDF('balita')">📄 Export PDF</button>
+        </div>
         <p class="page-sub">Pemantauan berat badan, tinggi, dan status gizi balita</p>
 
         <div class="pos-tabs" id="balita-tabs"></div>
@@ -1033,7 +1038,10 @@
 
       <!-- ==================== IBU HAMIL ==================== -->
       <div id="page-ibu_hamil" class="page">
-        <div class="page-title">Data Ibu Hamil</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+          <div class="page-title" style="margin-bottom:0">Data Ibu Hamil</div>
+          <button class="btn btn-secondary btn-sm" onclick="exportPDF('hamil')">📄 Export PDF</button>
+        </div>
         <p class="page-sub">Pemantauan kehamilan dan kunjungan ANC</p>
 
         <div class="pos-tabs" id="hamil-tabs"></div>
@@ -1070,7 +1078,10 @@
 
       <!-- ==================== LANSIA ==================== -->
       <div id="page-lansia" class="page">
-        <div class="page-title">Data Lansia</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+          <div class="page-title" style="margin-bottom:0">Data Lansia</div>
+          <button class="btn btn-secondary btn-sm" onclick="exportPDF('lansia')">📄 Export PDF</button>
+        </div>
         <p class="page-sub">Pemantauan kesehatan warga usia ≥ 60 tahun</p>
 
         <div class="pos-tabs" id="lansia-tabs"></div>
@@ -1107,7 +1118,10 @@
 
       <!-- ==================== ODGJ ==================== -->
       <div id="page-odgj" class="page">
-        <div class="page-title">Data ODGJ</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+          <div class="page-title" style="margin-bottom:0">Data ODGJ</div>
+          <button class="btn btn-secondary btn-sm" onclick="exportPDF('odgj')">📄 Export PDF</button>
+        </div>
         <p class="page-sub">Orang Dengan Gangguan Jiwa — Pemantauan & Pendampingan</p>
 
         <div class="pos-tabs" id="odgj-tabs"></div>
@@ -1147,7 +1161,10 @@
 
       <!-- ==================== IMUNISASI ==================== -->
       <div id="page-imunisasi" class="page">
-        <div class="page-title">Data Imunisasi</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+          <div class="page-title" style="margin-bottom:0">Data Imunisasi</div>
+          <button class="btn btn-secondary btn-sm" onclick="exportPDF('imun')">📄 Export PDF</button>
+        </div>
         <p class="page-sub">Cakupan imunisasi balita & ibu hamil per posyandu</p>
 
         <div class="pos-tabs" id="imun-tabs"></div>
@@ -1190,7 +1207,10 @@
 
       <!-- ==================== PSN ==================== -->
       <div id="page-psn" class="page">
-        <div class="page-title">PSN — Pemberantasan Sarang Nyamuk</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+          <div class="page-title" style="margin-bottom:0">PSN — Pemberantasan Sarang Nyamuk</div>
+          <button class="btn btn-secondary btn-sm" onclick="exportPDF('psn')">📄 Export PDF</button>
+        </div>
         <p class="page-sub">Pencatatan lokasi, foto bukti, dan pemantauan di peta</p>
 
         <div class="pos-tabs" id="psn-tabs"></div>
@@ -1286,7 +1306,10 @@
 
       <!-- ==================== JAMBAN ==================== -->
       <div id="page-jamban" class="page">
-        <div class="page-title">Jamban Sehat</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+          <div class="page-title" style="margin-bottom:0">Jamban Sehat</div>
+          <button class="btn btn-secondary btn-sm" onclick="exportPDF('jamban')">📄 Export PDF</button>
+        </div>
         <p class="page-sub">Pendataan kepemilikan dan kondisi jamban per keluarga</p>
 
         <div class="pos-tabs" id="jamban-tabs"></div>
@@ -2480,6 +2503,96 @@
     document.querySelectorAll('.modal-overlay').forEach(el => {
       el.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('open'); });
     });
+
+    // --- EXPORT PDF ---
+    function exportPDF(type) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const tgl = new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+      const W = doc.internal.pageSize.getWidth();
+
+      const configs = {
+        balita: {
+          title: 'Data Balita & Stunting',
+          subtitle: 'Posyandu Desa Sambong',
+          head: [['No','Nama','Usia','Alamat','Posyandu','BB (kg)','TB (cm)','LK (cm)','Status']],
+          body: () => data.balita.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' bln', d.alamat||'', d.pos||'', d.bb||'', d.tb||'', d.lk||'', d.status||''])
+        },
+        hamil: {
+          title: 'Data Ibu Hamil',
+          subtitle: 'Posyandu Desa Sambong',
+          head: [['No','Nama','Usia','Alamat','Posyandu','Usia Kehamilan','ANC Ke-','Status','TD']],
+          body: () => data.hamil.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' thn', d.alamat||'', d.pos||'', (d.uk||'')+' minggu', 'ANC ke-'+(d.anc||''), d.status||'', d.td||''])
+        },
+        lansia: {
+          title: 'Data Lansia',
+          subtitle: 'Posyandu Desa Sambong',
+          head: [['No','Nama','Usia','Alamat','Posyandu','TD (mmHg)','BB (kg)','TB (cm)','Keluhan','Tgl Kunjungan']],
+          body: () => data.lansia.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' thn', d.alamat||'', d.pos||'', d.td||'', d.bb||'', d.tb||'', d.riwayat||'', d.tgl||''])
+        },
+        odgj: {
+          title: 'Data ODGJ',
+          subtitle: 'Posyandu Desa Sambong — RAHASIA',
+          head: [['No','Nama','Usia','Alamat','Posyandu','Diagnosa','Status Obat','Pendamping','Tgl Pantau']],
+          body: () => data.odgj.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' thn', d.alamat||'', d.pos||'', d.diag||'', d.obat||'', d.wali||'', d.tgl||''])
+        },
+        imun: {
+          title: 'Data Imunisasi',
+          subtitle: 'Posyandu Desa Sambong',
+          head: [['No','Nama Anak','Usia','Posyandu','BCG','DPT','Polio','Campak','Hep B','Tanggal']],
+          body: () => data.imun.map((d,i) => [i+1, d.nama||'', (d.usia||'')+' bln', d.pos||'', d.bcg||'', d.dpt||'', d.polio||'', d.campak||'', d.hep||'', d.tgl||''])
+        },
+        psn: {
+          title: 'Data PSN — Pemberantasan Sarang Nyamuk',
+          subtitle: 'Posyandu Desa Sambong',
+          head: [['No','Posyandu','Alamat','Tanggal','Petugas','Hasil Temuan','Koordinat']],
+          body: () => data.psn.map((d,i) => [i+1, d.pos||'', d.alamat||'', d.tgl||'', d.petugas||'', d.temuan||'', (d.lat&&d.lng) ? d.lat+', '+d.lng : '-'])
+        },
+        jamban: {
+          title: 'Data Jamban Sehat',
+          subtitle: 'Posyandu Desa Sambong',
+          head: [['No','Nama KK','Alamat','Posyandu','Jenis Jamban','Kondisi','Air Bersih','Status ODF']],
+          body: () => data.jamban.map((d,i) => [i+1, d.nama||'', d.alamat||'', d.pos||'', d.jenis||'', d.kondisi||'', d.air||'', d.odf||''])
+        }
+      };
+
+      const cfg = configs[type];
+      if (!cfg) return alert('Kategori tidak dikenali');
+
+      const rows = cfg.body();
+      if (!rows.length) return alert('Belum ada data untuk diekspor');
+
+      // Header dokumen
+      doc.setFillColor(45, 122, 79);
+      doc.rect(0, 0, W, 22, 'F');
+      doc.setTextColor(255,255,255);
+      doc.setFontSize(14); doc.setFont('helvetica','bold');
+      doc.text(cfg.title, 14, 10);
+      doc.setFontSize(9); doc.setFont('helvetica','normal');
+      doc.text(cfg.subtitle + '   |   Dicetak: ' + tgl + '   |   Total: ' + rows.length + ' data', 14, 17);
+
+      // Tabel
+      doc.autoTable({
+        head: cfg.head,
+        body: rows,
+        startY: 26,
+        theme: 'grid',
+        headStyles: { fillColor: [45,122,79], textColor:255, fontStyle:'bold', fontSize:8 },
+        bodyStyles: { fontSize: 7.5, textColor: [30,46,30] },
+        alternateRowStyles: { fillColor: [240,248,243] },
+        styles: { cellPadding: 2.5, overflow: 'linebreak' },
+        margin: { left: 14, right: 14 },
+        didDrawPage: (d) => {
+          // Footer tiap halaman
+          const pageH = doc.internal.pageSize.getHeight();
+          doc.setFontSize(7); doc.setTextColor(120);
+          doc.text('SIMPADES — Sistem Informasi Posyandu Desa Sambong', 14, pageH-6);
+          doc.text('Hal ' + d.pageNumber, W-20, pageH-6);
+        }
+      });
+
+      doc.save('SIMPADES_' + cfg.title.replace(/[^a-zA-Z0-9]/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.pdf');
+    }
 
     // --- INIT ---
     fetchAwal();
