@@ -943,14 +943,32 @@
           </div>
         </div>
 
-        <!-- Peta Sebaran PSN -->
+        <!-- Peta + Riwayat PSN -->
+        <div class="grid2" style="margin-bottom:20px;">
+          <div class="card">
+            <div class="card-body">
+              <div class="section-hd">
+                <span class="section-title">🦟 Peta Sebaran PSN</span>
+                <span class="badge badge-green" id="dash-psn-badge">0 titik</span>
+              </div>
+              <div id="dash-map" style="height:300px;border-radius:10px;overflow:hidden;"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="section-hd"><span class="section-title">📋 Riwayat Kegiatan PSN</span></div>
+              <div id="dash-psn-list" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;">
+                <p style="color:var(--text3);font-size:13px;">Belum ada data PSN</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grafik PSN per Bulan -->
         <div class="card">
           <div class="card-body">
-            <div class="section-hd">
-              <span class="section-title">🦟 Peta Sebaran PSN</span>
-              <span class="badge badge-green" id="dash-psn-badge">0 titik</span>
-            </div>
-            <div id="dash-map" style="height:320px;border-radius:10px;overflow:hidden;"></div>
+            <div class="section-hd"><span class="section-title">📊 Grafik Kegiatan PSN per Bulan</span></div>
+            <div class="chart-box" style="height:220px;"><canvas id="chartPSN"></canvas></div>
           </div>
         </div>
       </div>
@@ -1754,6 +1772,15 @@
     async function fetchAwal() {
       try {
         const json = await jsonp(API_URL);
+        // Normalisasi data PSN — photos bisa jadi string dari Sheets
+        if (json.psn) {
+          json.psn = json.psn.map(d => ({
+            ...d,
+            photos: Array.isArray(d.photos) ? d.photos : (d.photos ? [d.photos] : []),
+            lat: d.lat ? String(d.lat) : null,
+            lng: d.lng ? String(d.lng) : null,
+          }));
+        }
         data = json;
         document.getElementById('global-loader').style.display = 'none';
         renderDashboard();
@@ -1960,19 +1987,57 @@
         if (!dashMap) return;
         dashMap.invalidateSize();
         if (dashMarkers.length === 1) {
-          // Satu titik — langsung zoom ke sana
           const latlng = dashMarkers[0].getLatLng();
           dashMap.setView(latlng, 16);
           dashMarkers[0].openPopup();
         } else if (dashMarkers.length > 1) {
-          // Banyak titik — fit semua
           const group = L.featureGroup(dashMarkers);
           dashMap.fitBounds(group.getBounds().pad(0.2));
         } else {
-          // Belum ada data — default ke Desa Sambong
           dashMap.setView(SAMBONG, 14);
         }
       }, 400);
+
+      // Riwayat PSN di dashboard
+      const riwayatEl = document.getElementById('dash-psn-list');
+      if (riwayatEl) {
+        if (!data.psn.length) {
+          riwayatEl.innerHTML = '<p style="color:var(--text3);font-size:13px;">Belum ada data PSN</p>';
+        } else {
+          riwayatEl.innerHTML = data.psn.slice().reverse().map(d => `
+            <div style="background:var(--bg);border-radius:8px;padding:10px 12px;border:1px solid var(--border);">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+                <div>
+                  <div style="font-weight:600;font-size:13px;">${d.pos||''} — ${d.alamat||''}</div>
+                  <div style="font-size:12px;color:var(--text2);margin-top:2px;">${d.temuan||''}</div>
+                  <div style="font-size:11px;color:var(--text3);margin-top:2px;">📅 ${d.tgl||''} &nbsp;👤 ${d.petugas||''}</div>
+                </div>
+                <span class="badge ${(d.temuan||'').includes('Tidak ada') ? 'badge-green' : 'badge-red'}" style="flex-shrink:0;white-space:nowrap">
+                  ${(d.temuan||'').includes('Tidak ada') ? 'Aman' : 'Ditemukan'}
+                </span>
+              </div>
+            </div>`).join('');
+        }
+      }
+
+      // Grafik PSN per bulan
+      const BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+      const now = new Date();
+      const tahun = now.getFullYear();
+      // Ambil 6 bulan terakhir
+      const bulanList = [];
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date(tahun, now.getMonth() - i, 1);
+        bulanList.push({ label: BULAN[d.getMonth()] + ' ' + d.getFullYear(), month: d.getMonth(), year: d.getFullYear() });
+      }
+      const psnPerBulan = bulanList.map(b => {
+        return data.psn.filter(d => {
+          if (!d.tgl) return false;
+          const tgl = new Date(d.tgl);
+          return tgl.getMonth() === b.month && tgl.getFullYear() === b.year;
+        }).length;
+      });
+      drawChart('chartPSN', 'bar', bulanList.map(b => b.label), [psnPerBulan], ['Kegiatan PSN'], ['#b86a00']);
     }
 
     // --- BALITA ---
@@ -2244,22 +2309,29 @@
 
     function updatePSNList() {
       const list = document.getElementById('psn-list');
-      if (!data.psn.length) { list.innerHTML = '<p style="color:var(--text3);font-size:13px;">Belum ada data PSN</p>'; return; }
-      list.innerHTML = data.psn.slice().reverse().map(d => `
-    <div class="card" style="padding:12px 14px;">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-        <div>
-          <div style="font-weight:600;font-size:13px;">${d.pos} — ${d.alamat}</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px;">${d.temuan}</div>
-          <div style="font-size:11px;color:var(--text3);">📅 ${d.tgl} &nbsp;👤 ${d.petugas}</div>
-        </div>
-        <span class="badge ${d.temuan.includes('Tidak ada') ? 'badge-green' : 'badge-red'}" style="flex-shrink:0">
-          ${d.temuan.includes('Tidak ada') ? 'Aman' : 'Ditemukan'}
-        </span>
-      </div>
-      ${d.photos.length ? `<div style="display:flex;gap:6px;margin-top:8px;">${d.photos.map(p => `<img src="${p}" style="width:48px;height:48px;border-radius:6px;object-fit:cover;">`).join('')}</div>` : ''}
-    </div>
-  `).join('');
+      if (!list) return;
+      if (!data.psn.length) {
+        list.innerHTML = '<p style="color:var(--text3);font-size:13px;">Belum ada data PSN</p>';
+        return;
+      }
+      list.innerHTML = data.psn.slice().reverse().map(d => {
+        const photos = Array.isArray(d.photos) ? d.photos : [];
+        const temuan = d.temuan || '';
+        return `
+        <div class="card" style="padding:12px 14px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+            <div>
+              <div style="font-weight:600;font-size:13px;">${d.pos||''} — ${d.alamat||''}</div>
+              <div style="font-size:12px;color:var(--text2);margin-top:2px;">${temuan}</div>
+              <div style="font-size:11px;color:var(--text3);">📅 ${d.tgl||''} &nbsp;👤 ${d.petugas||''}</div>
+            </div>
+            <span class="badge ${temuan.includes('Tidak ada') ? 'badge-green' : 'badge-red'}" style="flex-shrink:0;white-space:nowrap">
+              ${temuan.includes('Tidak ada') ? 'Aman' : 'Ditemukan'}
+            </span>
+          </div>
+          ${photos.length ? `<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">${photos.map(p => `<img src="${p}" style="width:48px;height:48px;border-radius:6px;object-fit:cover;">`).join('')}</div>` : ''}
+        </div>`;
+      }).join('');
     }
 
     // --- JAMBAN ---
